@@ -1,0 +1,74 @@
+<div class="relative h-[600px] w-full overflow-hidden bg-gray-900">
+  <!-- Slide 1 -->
+  <div class="slide active">
+    <div class="absolute inset-0">
+      <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop" alt="Yaz Koleksiyonu" class="w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
+    </div>
+    <div class="absolute inset-0 flex items-center">
+      <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-xl space-y-6">
+          <h2 class="text-4xl md:text-6xl font-bold text-white leading-tight">Yaz Koleksiyonu 2024</h2>
+          <p class="text-lg text-gray-200">Doğanın renkleriyle stilini keşfet. %50'ye varan indirimler.</p>
+          <button class="group bg-white text-gray-900 px-8 py-3 rounded-full font-semibold flex items-center space-x-2 hover:bg-primary-50 transition-all duration-300">
+            <span>Alışverişe Başla</span>
+            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 2 -->
+  <div class="slide">
+    <div class="absolute inset-0">
+      <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2070&auto=format&fit=crop" alt="Teknoloji" class="w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
+    </div>
+    <div class="absolute inset-0 flex items-center">
+      <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-xl space-y-6">
+          <h2 class="text-4xl md:text-6xl font-bold text-white leading-tight">Teknoloji Tutkunlarına</h2>
+          <p class="text-lg text-gray-200">En son teknoloji ürünleri şimdi kapınızda.</p>
+          <button class="group bg-white text-gray-900 px-8 py-3 rounded-full font-semibold flex items-center space-x-2 hover:bg-primary-50 transition-all duration-300">
+            <span>Ürünleri Gör</span>
+            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 3 -->
+  <div class="slide">
+    <div class="absolute inset-0">
+      <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=2070&auto=format&fit=crop" alt="Ev Dizaynı" class="w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
+    </div>
+    <div class="absolute inset-0 flex items-center">
+      <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-xl space-y-6">
+          <h2 class="text-4xl md:text-6xl font-bold text-white leading-tight">Minimalist Ev Dizaynı</h2>
+          <p class="text-lg text-gray-200">Eviniz için modern ve şık dokunuşlar.</p>
+          <button class="group bg-white text-gray-900 px-8 py-3 rounded-full font-semibold flex items-center space-x-2 hover:bg-primary-50 transition-all duration-300">
+            <span>Keşfet</span>
+            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <button onclick="changeSlide(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/10 hover:bg-white/30 backdrop-blur-sm rounded-full text-white transition-colors border border-white/20 hidden md:block">
+    <i data-lucide="chevron-left" class="w-6 h-6"></i>
+  </button>
+  <button onclick="changeSlide(1)" class="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/10 hover:bg-white/30 backdrop-blur-sm rounded-full text-white transition-colors border border-white/20 hidden md:block">
+    <i data-lucide="chevron-right" class="w-6 h-6"></i>
+  </button>
+  
+  <!-- Indicators -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-2" id="slider-indicators">
+    <!-- Populated by JS -->
+  </div>
+</div>

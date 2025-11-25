@@ -1,0 +1,46 @@
+<nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-transparent py-6">
+  <div class="container mx-auto px-4 md:px-6 flex items-center justify-between">
+    <!-- Logo -->
+    <div id="nav-logo" class="text-2xl font-bold tracking-tighter text-white transition-colors">
+      Lumina<span class="text-primary-600">.</span>
+    </div>
+
+    <!-- Desktop Menu -->
+    <div class="hidden md:flex space-x-8">
+      <a href="{{ path('app_home') }}" class="nav-link text-sm font-medium text-white hover:text-primary-500 transition-colors">Anasayfa</a>
+      <a href="{{ path('app_product') }}" class="nav-link text-sm font-medium text-white hover:text-primary-500 transition-colors">Moda & Giyim</a>
+
+      <a href="{{ path('app_spor') }}" class="nav-link text-sm font-medium text-white hover:text-primary-500 transition-colors">Spor & Outdoor</a>
+     
+ 
+    </div>
+
+    <!-- Icons -->
+    <div class="flex items-center space-x-4">
+      <button class="nav-icon-btn p-2 rounded-full transition-colors hover:bg-white/20 text-white">
+        <i data-lucide="search" class="w-5 h-5"></i>
+      </button>
+      
+      <button class="nav-icon-btn p-2 rounded-full transition-colors hidden md:block hover:bg-white/20 text-white">
+        <i data-lucide="user" class="w-5 h-5"></i>
+      </button>
+
+      <button onclick="toggleCart()" class="nav-icon-btn relative p-2 rounded-full transition-colors hover:bg-white/20 text-white">
+        <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+        <span class="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-primary-600 rounded-full">2</span>
+      </button>
+
+      <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-full transition-colors text-gray-900 md:text-white nav-mobile-btn">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-white shadow-lg md:hidden p-4 flex flex-col space-y-4 border-t">
+    <a href="{{ path('app_home') }}" class="text-gray-800 font-medium p-2 hover:bg-gray-50 rounded">Anasayfa</a>
+    <a href="{{ path('app_product') }}" class="text-gray-800 font-medium p-2 hover:bg-gray-50 rounded">Moda & Giyim</a>
+    <a href="{{ path('app_spor') }}" class="text-gray-800 font-medium p-2 hover:bg-gray-50 rounded">Spor & Outdoor</a>
+  
+  </div>
+</nav>

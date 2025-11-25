@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ProductController!{% endblock %}
+
+{% block body %}
+   <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumina E-Ticaret</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <script src="{{ asset('app.js') }}"></script>
+  
+  
+  </head>
+    {# Navbar'ı buraya çağırıyoruz #}
+    {{ include('partials/_navbar.html.twig') }}
+
+  
+    <!-- Kategori Başlığı -->
+    <section class="category-header">
+        <h1>Spor</h1>
+        <p>Sezonun en trend parçalarını keşfedin.</p>
+    </section>
+
+    <!-- Ürünler -->
+    <div class="container">
+        <div class="product-grid">
+            
+            <!-- Ürün 1 -->
+            <div class="product-card">
+                <img src="https://source.unsplash.com/random/300x300?fashion,jacket" alt="Ürün" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Deri Ceket</h3>
+                    <span class="product-price">1.250 TL</span>
+                    <button class="btn-add">Sepete Ekle</button>
+                </div>
+            </div>
+
+            <!-- Ürün 2 -->
+            <div class="product-card">
+                <img src="https://source.unsplash.com/random/300x300?jeans" alt="Ürün" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Mavi Kot Pantolon</h3>
+                    <span class="product-price">450 TL</span>
+                    <button class="btn-add">Sepete Ekle</button>
+                </div>
+            </div>
+
+            <!-- Ürün 3 -->
+            <div class="product-card">
+                <img src="https://source.unsplash.com/random/300x300?tshirt" alt="Ürün" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Basic T-Shirt</h3>
+                    <span class="product-price">120 TL</span>
+                    <button class="btn-add">Sepete Ekle</button>
+                </div>
+            </div>
+
+            <!-- Ürün 4 -->
+            <div class="product-card">
+                <img src="https://source.unsplash.com/random/300x300?sneakers" alt="Ürün" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Spor Ayakkabı</h3>
+                    <span class="product-price">890 TL</span>
+                    <button class="btn-add">Sepete Ekle</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {# Footer'ı buraya çağırıyoruz #}   
+    {{ include('partials/_footer.html.twig') }}
+
+
+</body>
+</html>
+{% endblock %}
