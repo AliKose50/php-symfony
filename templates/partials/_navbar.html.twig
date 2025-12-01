@@ -1,34 +1,69 @@
-<nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-transparent py-6">
+{# navbar_light: when true, render navbar with light background and dark text (for white pages) #}
+{% set navbar_light = navbar_light|default(false) %}
+{% if navbar_light %}
+    {% set navbar_classes = 'fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-white py-4 shadow-sm' %}
+    {% set text_color = 'text-gray-900' %}
+    {% set icon_text_color = 'text-gray-900 hover:bg-gray-100' %}
+{% else %}
+    {% set navbar_classes = 'fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-transparent py-6' %}
+    {% set text_color = 'text-white' %}
+    {% set icon_text_color = 'text-white hover:bg-white/20' %}
+{% endif %}
+
+<nav id="navbar" class="{{ navbar_classes }}">
   <div class="container mx-auto px-4 md:px-6 flex items-center justify-between">
     <!-- Logo -->
-    <div id="nav-logo" class="text-2xl font-bold tracking-tighter text-white transition-colors">
+    <div id="nav-logo" class="text-2xl font-bold tracking-tighter {{ text_color }} transition-colors">
       Lumina<span class="text-primary-600">.</span>
     </div>
 
     <!-- Desktop Menu -->
     <div class="hidden md:flex space-x-8">
-      <a href="{{ path('app_home') }}" class="nav-link text-sm font-medium text-white hover:text-primary-500 transition-colors">Anasayfa</a>
-      <a href="{{ path('app_product') }}" class="nav-link text-sm font-medium text-white hover:text-primary-500 transition-colors">Moda & Giyim</a>
+      <a href="{{ path('app_home') }}" class="nav-link text-sm font-medium {{ text_color }} hover:text-primary-500 transition-colors">Anasayfa</a>
+      <a href="{{ path('app_product') }}" class="nav-link text-sm font-medium {{ text_color }} hover:text-primary-500 transition-colors">Moda & Giyim</a>
 
-      <a href="{{ path('app_spor') }}" class="nav-link text-sm font-medium text-white hover:text-primary-500 transition-colors">Spor & Outdoor</a>
+      <a href="{{ path('app_spor') }}" class="nav-link text-sm font-medium {{ text_color }} hover:text-primary-500 transition-colors">Spor & Outdoor</a>
      
  
     </div>
 
     <!-- Icons -->
     <div class="flex items-center space-x-4">
-      <button class="nav-icon-btn p-2 rounded-full transition-colors hover:bg-white/20 text-white">
+      <button class="nav-icon-btn p-2 rounded-full transition-colors {{ icon_text_color }}">
         <i data-lucide="search" class="w-5 h-5"></i>
       </button>
       
-      <button class="nav-icon-btn p-2 rounded-full transition-colors hidden md:block hover:bg-white/20 text-white">
-        <i data-lucide="user" class="w-5 h-5"></i>
-      </button>
+      {% if app.user %}
+        <!-- Logged-in user dropdown menu -->
+        <div class="hidden md:block relative">
+          <button onclick="toggleUserMenu()" class="nav-icon-btn p-2 rounded-full transition-colors {{ icon_text_color }} flex items-center space-x-2">
+            <i data-lucide="user-circle" class="w-5 h-5"></i>
+            <span class="text-sm font-medium">{{ app.user.fullName }}</span>
+          </button>
+          <div id="user-dropdown-menu" class="hidden absolute top-12 right-0 bg-white rounded-lg shadow-xl py-2 min-w-[200px] z-50">
+            <a href="{{ path('app_account_profile') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 font-medium">
+              <i data-lucide="user" class="inline w-4 h-4 mr-2"></i>Hesaplarım
+            </a>
+            <a href="{{ path('app_cart_view') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 font-medium">
+              <i data-lucide="shopping-bag" class="inline w-4 h-4 mr-2"></i>Sepetim
+            </a>
+            <hr class="my-1">
+            <a href="{{ path('app_logout') }}" class="block px-4 py-2 text-red-600 hover:bg-red-50 font-medium">
+              <i data-lucide="log-out" class="inline w-4 h-4 mr-2"></i>Çıkış Yap
+            </a>
+          </div>
+        </div>
+      {% else %}
+        <!-- Login button for non-authenticated users -->
+        <button onclick="toggleLoginModal()" class="nav-icon-btn p-2 rounded-full transition-colors hidden md:block {{ icon_text_color }}">
+          <i data-lucide="user" class="w-5 h-5"></i>
+        </button>
+      {% endif %}
 
-      <button onclick="toggleCart()" class="nav-icon-btn relative p-2 rounded-full transition-colors hover:bg-white/20 text-white">
+      <a href="{{ path('app_cart_view') }}" class="nav-icon-btn relative p-2 rounded-full transition-colors hover:bg-white/20 text-white">
         <i data-lucide="shopping-bag" class="w-5 h-5"></i>
-        <span class="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-primary-600 rounded-full">2</span>
-      </button>
+        <span class="cart-count absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-primary-600 rounded-full">{{ cartCount|default(0) }}</span>
+      </a>
 
       <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-full transition-colors text-gray-900 md:text-white nav-mobile-btn">
         <i data-lucide="menu" class="w-6 h-6"></i>

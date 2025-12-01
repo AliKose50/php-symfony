@@ -57,5 +57,5 @@
     {# Footer'ı buraya çağırıyoruz #}
     {{ include('partials/_footer.html.twig') }}
     
-     <script src="{{ asset('app.js') }}"></script>
+    {# app.js loaded via importmap in base.html.twig as a module #}
 {% endblock %}

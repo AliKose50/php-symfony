@@ -3,7 +3,10 @@ framework:
     secret: '%env(APP_SECRET)%'
 
     # Note that the session will be started ONLY if you read or write from it.
-    session: true
+    session:
+        enabled: true
+        cookie_lifetime: 0  # Session cookie'si browser kapatılınca silinir
+        gc_maxlifetime: 1800  # 30 dakika session timeout
 
     #esi: true
     #fragments: true

@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hesaplarım - Lumina{% endblock %}
+
+{% block body %}
+    {# Navbar (light variant for white/gray background) #}
+    {{ include('partials/_navbar.html.twig', { navbar_light: true }) }}
+
+    <main class="min-h-screen bg-white pt-24">
+        <div class="max-w-4xl mx-auto px-6 py-12">
+            {# Header #}
+            <div class="mb-12">
+                <h1 class="text-4xl font-bold text-gray-900 mb-2">Hesaplarım</h1>
+                <p class="text-gray-600">Hoşgeldiniz, <span class="font-semibold">{{ user.fullName }}</span></p>
+            </div>
+
+            {# Profile Section #}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {# Sidebar Menu #}
+                <div class="md:col-span-1">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <nav class="space-y-2">
+                            <a href="{{ path('app_account_profile') }}" class="block px-4 py-2 bg-blue-600 text-white rounded-lg font-medium">
+                                <i data-lucide="user" class="inline w-4 h-4 mr-2"></i>
+                                Hesap Bilgileri
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium">
+                                <i data-lucide="package" class="inline w-4 h-4 mr-2"></i>
+                                Siparişlerim
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium">
+                                <i data-lucide="heart" class="inline w-4 h-4 mr-2"></i>
+                                Favorilerim
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium">
+                                <i data-lucide="map-pin" class="inline w-4 h-4 mr-2"></i>
+                                Adreslerim
+                            </a>
+                            <a href="{{ path('app_logout') }}" class="block px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg font-medium">
+                                <i data-lucide="log-out" class="inline w-4 h-4 mr-2"></i>
+                                Çıkış Yap
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+
+                {# Main Content #}
+                <div class="md:col-span-2 space-y-6">
+                    {# Account Information Card #}
+                    <div class="bg-white rounded-lg shadow p-8">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <i data-lucide="user-circle" class="w-6 h-6 mr-3 text-blue-600"></i>
+                            Kişisel Bilgiler
+                        </h2>
+                        {# Flash messages #}
+                        {% for label, messages in app.flashes %}
+                            {% for message in messages %}
+                                <div class="mb-4 px-4 py-3 rounded text-sm {{ label == 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700' }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endfor %}
+
+                        <form method="post" action="{{ path('app_account_update') }}" class="space-y-4">
+                            <input type="hidden" name="_token" value="{{ csrf_token('account_update') }}">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="fullName" class="block text-sm font-medium text-gray-700 mb-2">Ad Soyad</label>
+                                    <input id="fullName" name="fullName" type="text" value="{{ user.fullName }}" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900" required />
+                                </div>
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Adres</label>
+                                    <input id="email" name="email" type="email" value="{{ user.email }}" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900" required />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Yeni Parola (isteğe bağlı)</label>
+                                <input id="password" name="password" type="password" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900" placeholder="Yeni parola girin (boş bırakılırsa değişmez)" />
+                            </div>
+
+                            <div class="pt-4">
+                                <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors flex items-center">
+                                    <i data-lucide="save" class="w-4 h-4 mr-2"></i>
+                                    Bilgileri Güncelle
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    {# Account Stats #}
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white rounded-lg shadow p-6 text-center">
+                            <div class="text-3xl font-bold text-blue-600 mb-2">0</div>
+                            <p class="text-gray-600 text-sm">Toplam Sipariş</p>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6 text-center">
+                            <div class="text-3xl font-bold text-green-600 mb-2">0₺</div>
+                            <p class="text-gray-600 text-sm">Harcanan Tutar</p>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6 text-center">
+                            <div class="text-3xl font-bold text-purple-600 mb-2">0</div>
+                            <p class="text-gray-600 text-sm">Favori Ürün</p>
+                        </div>
+                    </div>
+
+                    {# Quick Actions #}
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Hızlı İşlemler</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <a href="{{ path('app_product') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-center transition-colors">
+                                Alışverişe Devam Et
+                            </a>
+                            <a href="{{ path('app_cart_view') }}" class="px-4 py-2 bg-white text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 font-medium text-center transition-colors">
+                                Sepetime Git ({{ cartCount }})
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function editProfile() {
+            alert('Profil düzenleme özelliği yakında eklenecek!');
+        }
+    </script>
+{% endblock %}

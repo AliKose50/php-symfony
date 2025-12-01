@@ -16,6 +16,23 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
+    /**
+     * Find products by category id and eager-load product images.
+     *
+     * @return Product[]
+     */
+    public function findByCategoryWithImages(int $categoryId): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.productImages', 'pi')
+            ->addSelect('pi')
+            ->andWhere('p.category = :cat')
+            ->setParameter('cat', $categoryId)
+            ->orderBy('p.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Product[] Returns an array of Product objects
     //     */

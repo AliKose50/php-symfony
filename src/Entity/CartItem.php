@@ -21,7 +21,7 @@ class CartItem
     private ?Product $product = null;
 
     #[ORM\Column]
-    private ?int $quantity = null;
+    private int $quantity = 1;
 
     public function getId(): ?int
     {
@@ -52,13 +52,16 @@ class CartItem
         return $this;
     }
 
-    public function getQuantity(): ?int
+    public function getQuantity(): int
     {
         return $this->quantity;
     }
 
     public function setQuantity(int $quantity): static
     {
+        if ($quantity < 0) {
+            $quantity = 0;
+        }
         $this->quantity = $quantity;
 
         return $this;

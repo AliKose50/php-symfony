@@ -1,0 +1,43 @@
+{# Partial: Product grid - expects `products` variable #}
+<div class="max-w-7xl mx-auto px-6 py-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for product in products %}
+            {% set mainImage = product.productImages|first %}
+            <div class="group bg-white rounded-2xl shadow hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col h-full">
+                <div class="relative overflow-hidden bg-gray-50" style="padding-top:100%;">
+                    {% if mainImage %}
+                        <img src="{{ asset('uploads/product_images/' ~ mainImage.imageUrl) }}" alt="{{ product.name }}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"/>
+                    {% else %}
+                        <div class="absolute inset-0 flex items-center justify-center text-gray-400">Resim yok</div>
+                    {% endif %}
+                </div>
+                <div class="p-4 flex flex-col flex-grow">
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            {% if product.category %}
+                                <div class="text-xs text-gray-500 font-medium uppercase tracking-wider">{{ product.category.name }}</div>
+                            {% endif %}
+                            <h3 class="font-semibold text-gray-900 text-md mb-1 hover:text-primary-600 transition-colors">{{ product.name }}</h3>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm text-gray-500">₺</div>
+                            <div class="text-lg font-bold text-primary-600">{{ product.price|number_format(2, ',', '.') }}</div>
+                        </div>
+                    </div>
+
+                    <p class="text-sm text-gray-500 line-clamp-2 mb-3">{{ product.description|striptags|slice(0,120) ~ (product.description|length > 120 ? '...' : '') }}</p>
+
+                    <div class="mt-auto flex items-center justify-between pt-3">
+                        <button type="button" onclick="addToCart({{ product.id }})" class="flex items-center gap-2 px-3 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 active:scale-95 transition-all duration-150 shadow-sm">
+                            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                            <span class="text-sm font-medium">Sepete Ekle</span>
+                        </button>
+                        <a href="{{ path('app_product_show', {'id': product.id}) }}" class="text-sm text-gray-600 hover:text-primary-600">Detay</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-span-4 text-center text-gray-600">Bu kategoride ürün bulunamadı.</div>
+        {% endfor %}
+    </div>
+</div>

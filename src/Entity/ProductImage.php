@@ -23,6 +23,11 @@ class ProductImage
     #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
 
+    public function __construct()
+    {
+        $this->isMain = false;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -46,6 +51,16 @@ class ProductImage
         $this->isMain = $isMain;
 
         return $this;
+    }
+
+    public function isMain(): ?bool
+    {
+        return $this->isMain;
+    }
+
+    public function getIsMain(): ?bool
+    {
+        return $this->isMain;
     }
 
     public function getProduct(): ?Product

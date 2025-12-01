@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sepetim{% endblock %}
+
+{% block body %}
+    {# Navbar (use default dark variant) #}
+    {{ include('partials/_navbar.html.twig') }}
+
+    <main class="max-w-5xl mx-auto px-6 py-12 pt-24">
+        <h1 class="text-2xl font-bold mb-6">Alışveriş Sepetim</h1>
+
+        {% if cart is not null and cart.cartItems|length > 0 %}
+            <div class="space-y-6" style="margin-top:50px">
+                {% for item in cart.cartItems %}
+                    <div id="cart-item-{{ item.id }}" class="flex items-center gap-6 p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow">
+                        <div class="w-28 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                            {% set img = item.product.productImages|first %}
+                            {% if img %}
+                                <img src="{{ asset('uploads/product_images/' ~ img.imageUrl) }}" class="w-full h-28 object-cover" loading="lazy" />
+                            {% else %}
+                                <div class="w-full h-28 flex items-center justify-center text-gray-400">Resim yok</div>
+                            {% endif %}
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-lg mb-1">{{ item.product.name }}</h3>
+                            <p class="text-sm text-gray-500 mb-2">{{ item.product.category.name }}</p>
+                            <div class="flex items-center gap-3">
+                                <button onclick="updateCartItem({{ item.id }}, -1)" class="px-3 py-1 border rounded">-</button>
+                                <span class="font-medium px-3">{{ item.quantity }}</span>
+                                <button onclick="updateCartItem({{ item.id }}, 1)" class="px-3 py-1 border rounded">+</button>
+                            </div>
+                        </div>
+                        <div class="text-right w-40">
+                            <div class="text-sm text-gray-500">Birim Fiyat</div>
+                            <div class="font-semibold text-lg">{{ item.product.price|number_format(2, ',', '.') }} ₺</div>
+                            <div class="text-sm text-gray-500 mt-2">Toplam</div>
+                            <div id="item-total-{{ item.id }}" class="font-bold text-lg text-primary-600">{{ (item.product.price * item.quantity)|number_format(2, ',', '.') }} ₺</div>
+                            <button onclick="removeCartItem({{ item.id }})" class="mt-2 text-red-500 text-sm">Sepetten Kaldır</button>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="flex justify-end">
+                    <div class="w-full max-w-md bg-white border rounded-lg p-6 shadow-sm">
+                        <div class="flex justify-between text-gray-600 mb-2">
+                            <span>Ara Toplam</span>
+                            <span id="cart-subtotal">{{ cartTotal|default(0)|number_format(2, ',', '.') }} ₺</span>
+                        </div>
+                        <div class="flex justify-between text-gray-600 mb-2">
+                            <span>Kargo</span>
+                            <span class="text-green-600 font-medium">Ücretsiz</span>
+                        </div>
+                        <div class="flex justify-between text-xl font-bold text-gray-900 pt-3 border-t">
+                            <span>Toplam</span>
+                            <span id="cart-total">{{ cartTotal|default(0)|number_format(2, ',', '.') }} ₺</span>
+                        </div>
+                        <div class="mt-4">
+                            <a href="#" class="block text-center bg-primary-600 text-white px-6 py-3 rounded-lg font-bold">Ödemeye Geç</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="p-8 bg-white rounded-lg text-center">
+                <p class="text-gray-700">Sepetinizde ürün bulunmuyor.</p>
+                <a href="{{ path('app_product') }}" class="mt-4 inline-block bg-primary-600 text-white px-4 py-2 rounded">Alışverişe Başla</a>
+            </div>
+        {% endif %}
+    </main>
+
+{% endblock %}

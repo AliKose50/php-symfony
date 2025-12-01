@@ -16,10 +16,10 @@ class Cart
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $status = null;
+    private string $status = 'open';
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private \DateTimeImmutable $createdAt;
 
     #[ORM\ManyToOne(inversedBy: 'carts')]
     private ?User $full_name = null;
@@ -33,6 +33,8 @@ class Cart
     public function __construct()
     {
         $this->cartItems = new ArrayCollection();
+        $this->status = 'open';
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -40,7 +42,7 @@ class Cart
         return $this->id;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): string
     {
         return $this->status;
     }
@@ -52,7 +54,7 @@ class Cart
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }

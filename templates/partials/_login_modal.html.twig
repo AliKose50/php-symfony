@@ -1,0 +1,103 @@
+{# Login Modal #}
+<div id="login-backdrop" class="login-backdrop fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] hidden" onclick="toggleLoginModal()"></div>
+
+<div id="login-modal" class="login-modal fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-lg shadow-2xl z-[70] hidden">
+    <div class="flex items-center justify-between p-6 border-b">
+        <h2 class="text-xl font-bold text-gray-900">Giriş Yap</h2>
+        <button onclick="toggleLoginModal()" class="text-gray-500 hover:text-gray-700">
+            <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+    </div>
+
+    <div class="p-6">
+        <form id="login-form" method="post" action="{{ path('app_login') }}">
+            <!-- Email -->
+            <div class="form-group mb-4">
+                <label for="login-email" class="block text-sm font-medium text-gray-700 mb-2">E-posta</label>
+                <input type="email" id="login-email" name="_username" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="email@example.com" required>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group mb-6">
+                <label for="login-password" class="block text-sm font-medium text-gray-700 mb-2">Şifre</label>
+                <input type="password" id="login-password" name="_password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="••••••••" required>
+            </div>
+
+            <!-- CSRF Token -->
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <!-- Error Message -->
+            <div id="login-error" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded hidden"></div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                Giriş Yap
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .login-modal {
+        animation: slideUp 0.3s ease-out;
+    }
+
+    .login-modal.hidden {
+        display: none;
+    }
+
+    .login-backdrop.hidden {
+        display: none;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -45%);
+        }
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+    }
+</style>
+
+<script>
+    function toggleLoginModal() {
+        const modal = document.getElementById('login-modal');
+        const backdrop = document.getElementById('login-backdrop');
+        
+        modal.classList.toggle('hidden');
+        backdrop.classList.toggle('hidden');
+
+        if (!modal.classList.contains('hidden')) {
+            lucide.replace();
+        }
+    }
+
+    // Form gönderildiğinde
+    document.getElementById('login-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(document.getElementById('login-form'));
+
+        try {
+            const response = await fetch("{{ path('app_login') }}", {
+                method: 'POST',
+                body: formData
+            });
+
+            // Login başarılı ise sayfa yenile (redirect olacak)
+            if (response.ok || response.redirected) {
+                window.location.href = response.url || window.location.href;
+            } else {
+                // Hata mesajı göster
+                const errorDiv = document.getElementById('login-error');
+                errorDiv.textContent = 'E-posta veya şifre yanlış';
+                errorDiv.classList.remove('hidden');
+            }
+        } catch (error) {
+            console.error('Login hatası:', error);
+        }
+    });
+</script>

@@ -3,7 +3,14 @@
 
 // initPage: sayfa/komponent init'lerini başlatır
 function initPage() {
-    loadComponents();
+    // Dinamik component'leri yükle (eğer placeholder'lar varsa)
+    const hasPlaceholders = document.querySelector('#navbar-placeholder, #hero-placeholder, #content-placeholder, #cart-placeholder, #footer-placeholder');
+    if (hasPlaceholders) {
+        loadComponents();
+    } else {
+        // Doğrudan interactive özelikleri başlat (ürün sayfası, sepet, vb)
+        initializeInteractiveFeatures();
+    }
 }
 
 // Çeşitli navigation yöntemleri için init çağrısı
@@ -11,6 +18,9 @@ document.addEventListener('DOMContentLoaded', initPage);
 document.addEventListener('turbo:load', initPage);
 document.addEventListener('turbolinks:load', initPage);
 window.initPage = initPage;
+
+// Sayfa yenilendikçe buton bindinglerini de yenile (navigation olayları)
+window.addEventListener('load', bindAddToCartButtons);
 
 // HTML Parçalarını Yükleme Fonksiyonu
 async function loadComponents() {
@@ -42,17 +52,8 @@ async function loadComponents() {
 
     } catch (error) {
         console.error("Bileşenler yüklenirken hata oluştu:", error);
-
-        // Hata mesajını ekrana bas (Kullanıcı sunucu kullanmıyorsa görsün)
-        const errorMsg = document.createElement('div');
-        errorMsg.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px;";
-        errorMsg.innerHTML = `
-            <h1 style="color:red; font-size:24px; margin-bottom:10px;">⚠️ Görüntüleme Hatası</h1>
-            <p style="font-size:18px; color:#333;">Dosyalar yüklenemedi (CORS Hatası).</p>
-            <p style="margin-top:10px; color:#666;">Bu yapıyı (HTML parçalama) kullanmak için dosyayı direkt çift tıklayarak açamazsınız.</p>
-            <p style="font-weight:bold; margin-top:10px;">Lütfen VS Code "Live Server" eklentisi veya bir Localhost sunucusu kullanın.</p>
-        `;
-        document.body.appendChild(errorMsg);
+        // Hata olsa bile interactive özelikleri başlat
+        initializeInteractiveFeatures();
     }
 }
 
@@ -71,6 +72,9 @@ function initializeInteractiveFeatures() {
 
     // 3. Slider Başlat
     initSlider();
+
+    // 4. Bind add-to-cart buttons
+    bindAddToCartButtons();
 
     console.log("Tüm parçalar yüklendi ve özellikler aktif edildi.");
 }
@@ -203,13 +207,238 @@ window.toggleMobileMenu = function () {
     if (menu) menu.classList.toggle('hidden');
 }
 
+// User Dropdown Menu Logic
+window.toggleUserMenu = function () {
+    const dropdown = document.getElementById('user-dropdown-menu');
+    if (dropdown) {
+        dropdown.classList.toggle('hidden');
+    }
+}
+
+// Close user dropdown when clicking outside
+document.addEventListener('click', function (event) {
+    const dropdown = document.getElementById('user-dropdown-menu');
+    const userBtn = event.target.closest('button[onclick*="toggleUserMenu"]');
+
+    if (dropdown && !userBtn && !dropdown.contains(event.target)) {
+        dropdown.classList.add('hidden');
+    }
+});
+
 // Cart Logic
+// Cart toggle: show/hide cart sidebar and backdrop
 window.toggleCart = function () {
     const sidebar = document.getElementById('cart-sidebar');
     const backdrop = document.getElementById('cart-backdrop');
-    if (sidebar) sidebar.classList.toggle('open');
-    if (backdrop) backdrop.classList.toggle('open');
+    if (sidebar) sidebar.classList.toggle('hidden');
+    if (backdrop) backdrop.classList.toggle('hidden');
 }
+
+// Update cart item quantity
+window.updateCartItem = function (itemId, delta) {
+    fetch('/cart/update/' + itemId, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'delta=' + delta
+    })
+        .then(response => {
+            if (response.status === 401) {
+                alert('Lütfen giriş yapın');
+                return null;
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data) return;
+            if (data.success) {
+                // Update item quantity display
+                const qtySpan = document.querySelector('#cart-item-' + itemId + ' .font-medium.px-3');
+                if (qtySpan) qtySpan.textContent = data.quantity;
+
+                // Update line total
+                const lineTotalEl = document.getElementById('item-total-' + itemId);
+                if (lineTotalEl) lineTotalEl.textContent = (data.lineTotal || 0).toFixed(2).replace('.', ',') + ' ₺';
+
+                // Update cart counters
+                const cartCountEls = document.querySelectorAll('.cart-count');
+                cartCountEls.forEach(el => { if (data.cartCount !== undefined) el.textContent = data.cartCount; });
+
+                // Update subtotal/total
+                const subtotalEl = document.getElementById('cart-subtotal');
+                const totalEl = document.getElementById('cart-total');
+                if (subtotalEl) subtotalEl.textContent = (data.cartTotal || 0).toFixed(2).replace('.', ',') + ' ₺';
+                if (totalEl) totalEl.textContent = (data.cartTotal || 0).toFixed(2).replace('.', ',') + ' ₺';
+            } else {
+                alert('Hata: ' + (data.error || 'Bilinmeyen hata'));
+            }
+        })
+        .catch(error => {
+            console.error('updateCartItem hata:', error);
+            alert('Güncelleme sırasında hata oluştu');
+        });
+}
+
+// Remove cart item
+window.removeCartItem = function (itemId) {
+    if (confirm('Bu ürünü sepetten kaldırmak istediğinize emin misiniz?')) {
+        fetch('/cart/remove/' + itemId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }
+        })
+            .then(response => {
+                if (response.status === 401) {
+                    alert('Lütfen giriş yapın');
+                    return null;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!data) return;
+                if (data.success) {
+                    // remove item DOM
+                    const itemEl = document.getElementById('cart-item-' + itemId);
+                    if (itemEl) itemEl.remove();
+
+                    // update counters and totals
+                    const cartCountEls = document.querySelectorAll('.cart-count');
+                    cartCountEls.forEach(el => { if (data.cartCount !== undefined) el.textContent = data.cartCount; });
+                    const subtotalEl = document.getElementById('cart-subtotal');
+                    const totalEl = document.getElementById('cart-total');
+                    if (subtotalEl) subtotalEl.textContent = (data.cartTotal || 0).toFixed(2).replace('.', ',') + ' ₺';
+                    if (totalEl) totalEl.textContent = (data.cartTotal || 0).toFixed(2).replace('.', ',') + ' ₺';
+
+                    // if cart empty, show empty message
+                    const remaining = document.querySelectorAll('[id^="cart-item-"]').length;
+                    if (remaining === 0) {
+                        const mainEl = document.querySelector('main');
+                        if (mainEl) {
+                            mainEl.innerHTML = '<div class="p-8 bg-white rounded-lg text-center"><p class="text-gray-700">Sepetinizde ürün bulunmuyor.</p><a href="/product" class="mt-4 inline-block bg-primary-600 text-white px-4 py-2 rounded">Alışverişe Başla</a></div>';
+                        }
+                    }
+                } else {
+                    alert('Hata: ' + (data.error || 'Bilinmeyen hata'));
+                }
+            })
+            .catch(error => {
+                console.error('removeCartItem hata:', error);
+                alert('Silme sırasında hata oluştu');
+            });
+    }
+}
+
+// Add to Cart with Authentication Check
+window.addToCart = function (productId) {
+    // Sepete ekle butonuna tıklanırsa önce giriş kontrolü yap
+    const loginModal = document.getElementById('login-modal');
+    const loginBackdrop = document.getElementById('login-backdrop');
+
+    // Kullanıcı giriş yapmışsa AJAX ile ürünü sepete ekle
+    fetch('/cart/add/' + productId, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'quantity=1'
+    })
+        .then(response => {
+            // Eğer yetkilendirme yoksa (401/403) login modalını aç
+            if (response.status === 401 || response.status === 403) {
+                if (loginModal) loginModal.classList.remove('hidden');
+                if (loginBackdrop) loginBackdrop.classList.remove('hidden');
+                return null;
+            }
+
+            const ct = response.headers.get('content-type') || '';
+            if (!ct.includes('application/json')) {
+                // Beklenmeyen cevap; debug için text olarak al
+                return response.text().then(txt => {
+                    console.error('Beklenmeyen cevap (JSON değil):', txt);
+                    alert('Sunucudan beklenmeyen bir cevap alındı. Detaylar konsolda.');
+                    return null;
+                });
+            }
+
+            return response.json();
+        })
+        .then(data => {
+            if (!data) return;
+
+            if (data.error) {
+                if (loginModal) loginModal.classList.remove('hidden');
+                if (loginBackdrop) loginBackdrop.classList.remove('hidden');
+                alert(data.error);
+                return;
+            }
+
+            // Başarılı ekleme: küçük bir bildirim göster ve cart sayacını güncelle
+            if (typeof showTempMessage === 'function') {
+                showTempMessage(data.message || 'Ürün sepete eklendi!');
+            } else {
+                alert(data.message || 'Ürün sepete eklendi!');
+            }
+
+            // Prefer server-provided cartCount; fall back to incrementing local count
+            const cartCountEls = document.querySelectorAll('.cart-count');
+            let newCount;
+            if (typeof data.cartCount !== 'undefined') {
+                newCount = data.cartCount;
+            } else {
+                const c0 = document.querySelector('.cart-count');
+                const prev = c0 ? parseInt((c0.textContent || '').replace(/[^0-9]/g, '')) || 0 : 0;
+                newCount = prev + 1;
+            }
+            cartCountEls.forEach(el => { el.textContent = newCount; });
+
+            // Also update product page's inline counter (if present) which shows like "X ürün"
+            try {
+                const productCountEls = Array.from(document.querySelectorAll('.font-medium'))
+                    .filter(el => /\d+\s*ürün/.test(el.textContent.trim()));
+                productCountEls.forEach(el => {
+                    el.textContent = newCount + ' ürün';
+                });
+            } catch (e) { /* ignore if DOM different */ }
+
+            // Temporarily change the Add button text to indicate success (if found)
+            try {
+                const addBtn = document.querySelector(`button[data-product-id="${productId}"]`) || document.querySelector(`#add-to-cart-${productId}`);
+                if (addBtn) {
+                    const orig = addBtn.textContent;
+                    addBtn.textContent = 'Eklendi';
+                    setTimeout(() => { addBtn.textContent = orig; }, 1400);
+                }
+            } catch (e) { /* ignore */ }
+        })
+        .catch(error => {
+            console.error('addToCart hata:', error);
+            alert('Sepete ekleme işlemi sırasında hata oluştu. Konsolu kontrol edin.');
+        });
+}
+
+// Küçük geçici bildirim göster
+function showTempMessage(msg) {
+    try {
+        const el = document.createElement('div');
+        el.textContent = msg;
+        el.style = 'position:fixed; top:1rem; right:1rem; background:#16a34a; color:white; padding:8px 12px; border-radius:6px; box-shadow:0 6px 18px rgba(0,0,0,0.12); z-index:9999; font-family:Inter, sans-serif;';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 3000);
+    } catch (e) {
+        console.log(msg);
+    }
+}
+
+// Login Modal Logic
+window.toggleLoginModal = function () {
+    const modal = document.getElementById('login-modal');
+    const backdrop = document.getElementById('login-backdrop');
+    if (modal) modal.classList.toggle('hidden');
+    if (backdrop) backdrop.classList.toggle('hidden');
+}
+
 tailwind.config = {
     theme: {
         extend: {
@@ -228,4 +457,29 @@ tailwind.config = {
             }
         }
     }
+}
+
+// Bind click handlers for add-to-cart buttons (non-inline, resilient)
+// Her sayfa yüklemesinde bindleri yenile (önceki event listener'ları sıfırla)
+function bindAddToCartButtons() {
+    const buttons = document.querySelectorAll('.add-to-cart-btn');
+    buttons.forEach(btn => {
+        // Eski event listener'ları kaldırmak için butonu klonla ve değiştir
+        // (veya basitçe yeni listener ekle, eski olanlar çağrılmayacak)
+        // Sadece one-time binding için güvenli bir yol: element'i yenile
+
+        // Daha basit: her listener'a bir marker koy ve kontrol et
+        if (btn.dataset.addToCartBound) return;
+
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const pid = btn.getAttribute('data-product-id') || btn.dataset.productId;
+            if (!pid) return;
+            console.log('add-to-cart button clicked for product', pid); // debug log
+            if (typeof window.addToCart === 'function') {
+                window.addToCart(parseInt(pid));
+            }
+        });
+        btn.dataset.addToCartBound = '1';
+    });
 }

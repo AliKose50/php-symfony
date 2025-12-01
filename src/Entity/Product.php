@@ -51,6 +51,7 @@ class Product
     {
         $this->productImages = new ArrayCollection();
         $this->cartItems = new ArrayCollection();
+        $this->created_at = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -188,5 +189,10 @@ class Product
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return (string) $this->getName();
     }
 }

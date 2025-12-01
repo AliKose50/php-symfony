@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ProductController!{% endblock %}
+{% block title %}{{ category ? category.name : 'Ürünler' }}{% endblock %}
 
 {% block body %}
-   <meta charset="UTF-8" />
+  <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lumina E-Ticaret</title>
     
@@ -15,70 +15,66 @@
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        {# app.js loaded via importmap in base.html.twig as a module #}
   
   
   </head>
     {# Navbar'ı buraya çağırıyoruz #}
     {{ include('partials/_navbar.html.twig') }}
 
-  
-    <!-- Kategori Başlığı -->
+    {# Sepet partial'ı #}
+    {{ include('partials/_cart.html.twig') }}
+
+<!-- Kategori Başlığı -->
     <section class="category-header">
-        <h1>Moda & Giyim</h1>
+        <h1>moda Giyim</h1>
         <p>Sezonun en trend parçalarını keşfedin.</p>
     </section>
 
-    <!-- Ürünler -->
-    <div class="container">
-        <div class="product-grid">
-            
-            <!-- Ürün 1 -->
-            <div class="product-card">
-                <img src="https://source.unsplash.com/random/300x300?fashion,jacket" alt="Ürün" class="product-image">
-                <div class="product-info">
-                    <h3 class="product-title">Deri Ceket</h3>
-                    <span class="product-price">1.250 TL</span>
-                    <button class="btn-add">Sepete Ekle</button>
-                </div>
-            </div>
-
-            <!-- Ürün 2 -->
-            <div class="product-card">
-                <img src="https://source.unsplash.com/random/300x300?jeans" alt="Ürün" class="product-image">
-                <div class="product-info">
-                    <h3 class="product-title">Mavi Kot Pantolon</h3>
-                    <span class="product-price">450 TL</span>
-                    <button class="btn-add">Sepete Ekle</button>
-                </div>
-            </div>
-
-            <!-- Ürün 3 -->
-            <div class="product-card">
-                <img src="https://source.unsplash.com/random/300x300?tshirt" alt="Ürün" class="product-image">
-                <div class="product-info">
-                    <h3 class="product-title">Basic T-Shirt</h3>
-                    <span class="product-price">120 TL</span>
-                    <button class="btn-add">Sepete Ekle</button>
-                </div>
-            </div>
-
-            <!-- Ürün 4 -->
-            <div class="product-card">
-                <img src="https://source.unsplash.com/random/300x300?sneakers" alt="Ürün" class="product-image">
-                <div class="product-info">
-                    <h3 class="product-title">Spor Ayakkabı</h3>
-                    <span class="product-price">890 TL</span>
-                    <button class="btn-add">Sepete Ekle</button>
-                </div>
-            </div>
-
+    <!-- Kategori Başlığı -->
+    <section class="px-6 py-6 bg-gray-100">
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-2xl font-semibold">{{ category ? category.name : 'Tüm Ürünler' }}</h1>
+            {% if category and category.parent %}
+                <p class="text-sm text-gray-600">Alt kategori: {{ category.parent.name }}</p>
+            {% endif %}
         </div>
-    </div>
+    </section>
+{# 
+    <!-- Ürünler -->
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for product in products %}
+                {% set mainImage = product.productImages|first %}
+                {% if not mainImage %}
+                    {% set mainImage = product.productImages|first %}
+                {% endif %}
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="h-56 bg-gray-50 flex items-center justify-center">
+                        {% if mainImage %}
+                            <img src="{{ asset('uploads/product_images/' ~ mainImage.imageUrl) }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+                        {% else %}
+                            <div class="text-gray-400">Resim yok</div>
+                        {% endif %}
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-lg font-medium">{{ product.name }}</h3>
+                        <p class="mt-2 text-gray-600">{{ product.description|raw }}</p>
+                        <div class="mt-3 flex items-center justify-between">
+                            <span class="text-xl font-semibold">{{ product.price }}₺</span>
+                            <a href="#" class="inline-block bg-indigo-600 text-white px-3 py-1 rounded">İncele</a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-span-4 text-center text-gray-600">Bu kategoride ürün bulunamadı.</div>
+            {% endfor %}
+        </div>
+    </div> #}
+    {# Reusable product grid partial #}
+    {{ include('partials/_product_grid.html.twig', { products: products }) }}
 
-    {# Footer'ı buraya çağırıyoruz #}   
+
     {{ include('partials/_footer.html.twig') }}
 
-
-</body>
-</html>
 {% endblock %}

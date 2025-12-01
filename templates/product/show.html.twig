@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ product.name }} - Ürün Detayı{% endblock %}
+
+{% block body %}
+    {{ include('partials/_navbar.html.twig') }}
+
+    <main class="max-w-6xl mx-auto px-6 py-12 pt-24">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="md:col-span-2">
+                <div class="bg-white rounded-lg p-6 shadow">
+                    {% set mainImage = product.productImages|first %}
+                    {% if mainImage %}
+                        <img src="{{ asset('uploads/product_images/' ~ mainImage.imageUrl) }}" class="w-full h-96 object-cover rounded-lg" />
+                    {% else %}
+                        <div class="w-full h-96 bg-gray-100 flex items-center justify-center rounded-lg">Resim yok</div>
+                    {% endif %}
+
+                    <h1 class="text-2xl font-bold mt-4">{{ product.name }}</h1>
+                    <p class="text-gray-600 mt-2">{{ product.category.name }}</p>
+                    <div class="mt-4 text-lg font-bold text-primary-600">{{ product.price|number_format(2, ',', '.') }} ₺</div>
+
+                    <div class="mt-6 text-gray-700 leading-relaxed">{{ product.description|raw }}</div>
+                </div>
+            </div>
+
+            <aside class="md:col-span-1">
+                <div class="bg-white rounded-lg p-6 shadow">
+                    <div class="text-sm text-gray-500">Stok</div>
+                    <div class="font-semibold">{{ product.stock }}</div>
+
+                    <div class="mt-4">
+                        <button type="button" data-product-id="{{ product.id }}" class="add-to-cart-btn w-full bg-primary-600 text-white px-4 py-3 rounded-lg font-bold">Sepete Ekle</button>
+                    </div>
+
+                    <div class="mt-6 text-sm text-gray-500">Sepetimde</div>
+                    <div class="font-medium"><span class="cart-count">{{ cartCount|default(0) }}</span> ürün</div>
+                </div>
+            </aside>
+        </div>
+    </main>
+{% endblock %}
