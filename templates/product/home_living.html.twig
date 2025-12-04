@@ -1,0 +1,90 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Ev & Yaşam - Ürünler{% endblock %}
+
+{% block body %}
+    {# Navbar #}
+    {{ include('partials/_navbar.html.twig') }}
+
+    <main class="max-w-7xl mx-auto px-6 py-12 pt-24">
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">Ev & Yaşam Koleksiyonu</h1>
+            <p class="text-gray-600">Evinizi daha güzel kılacak ürünler</p>
+        </div>
+
+        <!-- Filtrele ve Sırala -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
+            <div class="flex items-center gap-3">
+                <button class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 shadow-sm transition-colors">
+                    <i data-lucide="filter" class="w-4 h-4"></i>
+                    <span>Filtrele</span>
+                </button>
+                <select class="px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-100 shadow-sm cursor-pointer">
+                    <option>Önerilen Sıralama</option>
+                    <option>En Düşük Fiyat</option>
+                    <option>En Yüksek Fiyat</option>
+                    <option>En Yeniler</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Ürün Grid -->
+        {% if products is not empty %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {% for product in products %}
+                    <div class="group bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col h-full">
+                        <div class="relative aspect-square overflow-hidden bg-gray-100">
+                            {% set img = product.productImages|first %}
+                            {% if img %}
+                                <img src="{{ asset('uploads/product_images/' ~ img.imageUrl) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            {% else %}
+                                <div class="w-full h-full flex items-center justify-center text-gray-400">Resim Yok</div>
+                            {% endif %}
+                            <button class="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-colors opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 duration-300">
+                                <i data-lucide="heart" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <div class="p-4 flex flex-col flex-grow">
+                            <div class="text-xs text-gray-500 mb-1 font-medium uppercase tracking-wider">{{ product.category.name }}</div>
+                            <a href="{{ path('app_product_show', {'id': product.id}) }}" class="font-semibold text-gray-900 text-lg mb-2 line-clamp-2 hover:text-primary-600 transition-colors cursor-pointer">{{ product.name }}</a>
+                            
+                            <div class="flex items-center mb-3">
+                                <div class="flex text-yellow-400">
+                                    <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                                    <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                                    <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                                    <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                                    <i data-lucide="star" class="w-3 h-3 text-gray-300"></i>
+                                </div>
+                                <span class="text-xs text-gray-500 ml-1">(4.5)</span>
+                            </div>
+
+                            <div class="mt-auto flex items-center justify-between pt-4 border-t border-gray-50">
+                                <div class="flex flex-col">
+                                    <span class="text-lg font-bold text-primary-600">{{ product.price|number_format(2, ',', '.') }} ₺</span>
+                                </div>
+                                <button onclick="addToCart({{ product.id }})" class="add-to-cart-btn p-2.5 bg-gray-900 text-white rounded-lg hover:bg-primary-600 active:scale-95 transition-all duration-200 shadow-md group-hover:shadow-lg" data-product-id="{{ product.id }}">
+                                    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-16">
+                <p class="text-gray-600 text-lg">Bu kategoride ürün bulunmamaktadır.</p>
+            </div>
+        {% endif %}
+    </main>
+
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.replace();
+            bindAddToCartButtons();
+        });
+    </script>
+    
+    {{ include('partials/_footer.html.twig') }}
+{% endblock %}

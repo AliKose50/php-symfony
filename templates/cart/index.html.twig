@@ -55,7 +55,7 @@
                             <span id="cart-total">{{ cartTotal|default(0)|number_format(2, ',', '.') }} ₺</span>
                         </div>
                         <div class="mt-4">
-                            <a href="#" class="block text-center bg-primary-600 text-white px-6 py-3 rounded-lg font-bold">Ödemeye Geç</a>
+                            <a href="{{ path('app_checkout') }}" class="block text-center bg-primary-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-primary-700 transition-colors">Ödemeye Geç</a>
                         </div>
                     </div>
                 </div>

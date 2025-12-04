@@ -6,7 +6,11 @@
             <div class="group bg-white rounded-2xl shadow hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col h-full">
                 <div class="relative overflow-hidden bg-gray-50" style="padding-top:100%;">
                     {% if mainImage %}
-                        <img src="{{ asset('uploads/product_images/' ~ mainImage.imageUrl) }}" alt="{{ product.name }}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"/>
+                        {% if mainImage.imageUrl starts with 'http' %}
+                            <img src="{{ mainImage.imageUrl }}" alt="{{ product.name }}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"/>
+                        {% else %}
+                            <img src="{{ asset('uploads/product_images/' ~ mainImage.imageUrl) }}" alt="{{ product.name }}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"/>
+                        {% endif %}
                     {% else %}
                         <div class="absolute inset-0 flex items-center justify-center text-gray-400">Resim yok</div>
                     {% endif %}

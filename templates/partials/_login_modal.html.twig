@@ -3,14 +3,25 @@
 
 <div id="login-modal" class="login-modal fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-lg shadow-2xl z-[70] hidden">
     <div class="flex items-center justify-between p-6 border-b">
-        <h2 class="text-xl font-bold text-gray-900">Giriş Yap</h2>
+        <h2 class="text-xl font-bold text-gray-900" id="modal-title">Giriş Yap</h2>
         <button onclick="toggleLoginModal()" class="text-gray-500 hover:text-gray-700">
             <i data-lucide="x" class="w-6 h-6"></i>
         </button>
     </div>
 
+    <!-- Tab Buttons -->
+    <div class="flex border-b">
+        <button onclick="switchLoginTab('login')" class="login-tab flex-1 py-3 px-4 text-center font-medium border-b-2 border-primary-600 text-primary-600" data-tab="login">
+            Giriş Yap
+        </button>
+        <button onclick="switchLoginTab('register')" class="register-tab flex-1 py-3 px-4 text-center font-medium border-b-2 border-transparent text-gray-600 hover:text-gray-900" data-tab="register">
+            Kayıt Ol
+        </button>
+    </div>
+
     <div class="p-6">
-        <form id="login-form" method="post" action="{{ path('app_login') }}">
+        <!-- Login Form -->
+        <form id="login-form" class="login-content" method="post" action="{{ path('app_login') }}">
             <!-- Email -->
             <div class="form-group mb-4">
                 <label for="login-email" class="block text-sm font-medium text-gray-700 mb-2">E-posta</label>
@@ -34,6 +45,41 @@
                 Giriş Yap
             </button>
         </form>
+
+        <!-- Register Form -->
+        <form id="register-form" class="register-content hidden" method="post" action="{{ path('app_register') }}">
+            <!-- Full Name -->
+            <div class="form-group mb-4">
+                <label for="register-fullName" class="block text-sm font-medium text-gray-700 mb-2">Ad Soyad</label>
+                <input type="text" id="register-fullName" name="fullName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="Adınız Soyadınız">
+            </div>
+
+            <!-- Email -->
+            <div class="form-group mb-4">
+                <label for="register-email" class="block text-sm font-medium text-gray-700 mb-2">E-posta</label>
+                <input type="email" id="register-email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="email@example.com">
+            </div>
+
+            <!-- Password -->
+            <div class="form-group mb-4">
+                <label for="register-password" class="block text-sm font-medium text-gray-700 mb-2">Şifre</label>
+                <input type="password" id="register-password" name="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="En az 6 karakter">
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="form-group mb-6">
+                <label for="register-confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">Şifreyi Onayla</label>
+                <input type="password" id="register-confirmPassword" name="confirmPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="Şifrenizi tekrar girin">
+            </div>
+
+            <!-- Error Message -->
+            <div id="register-error" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded hidden"></div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                Kayıt Ol
+            </button>
+        </form>
     </div>
 </div>
 
@@ -47,6 +93,10 @@
     }
 
     .login-backdrop.hidden {
+        display: none;
+    }
+
+    .register-content.hidden {
         display: none;
     }
 
@@ -75,7 +125,37 @@
         }
     }
 
-    // Form gönderildiğinde
+    function switchLoginTab(tab) {
+        const loginContent = document.getElementById('login-form');
+        const registerContent = document.getElementById('register-form');
+        const loginTab = document.querySelector('[data-tab="login"]');
+        const registerTab = document.querySelector('[data-tab="register"]');
+        const modalTitle = document.getElementById('modal-title');
+
+        if (tab === 'login') {
+            loginContent.classList.remove('hidden');
+            registerContent.classList.add('hidden');
+            loginTab.classList.add('border-primary-600', 'text-primary-600');
+            loginTab.classList.remove('border-transparent', 'text-gray-600');
+            registerTab.classList.remove('border-primary-600', 'text-primary-600');
+            registerTab.classList.add('border-transparent', 'text-gray-600');
+            modalTitle.textContent = 'Giriş Yap';
+            // Hatayı temizle
+            document.getElementById('login-error').classList.add('hidden');
+        } else {
+            registerContent.classList.remove('hidden');
+            loginContent.classList.add('hidden');
+            registerTab.classList.add('border-primary-600', 'text-primary-600');
+            registerTab.classList.remove('border-transparent', 'text-gray-600');
+            loginTab.classList.remove('border-primary-600', 'text-primary-600');
+            loginTab.classList.add('border-transparent', 'text-gray-600');
+            modalTitle.textContent = 'Kayıt Ol';
+            // Hatayı temizle
+            document.getElementById('register-error').classList.add('hidden');
+        }
+    }
+
+    // Login Form gönderildiğinde
     document.getElementById('login-form')?.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -98,6 +178,60 @@
             }
         } catch (error) {
             console.error('Login hatası:', error);
+        }
+    });
+
+    // Register Form gönderildiğinde
+    document.getElementById('register-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const fullName = document.getElementById('register-fullName').value;
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+        const confirmPassword = document.getElementById('register-confirmPassword').value;
+
+        const formData = new FormData();
+        formData.append('fullName', fullName);
+        formData.append('email', email);
+        formData.append('password', password);
+        formData.append('confirmPassword', confirmPassword);
+
+        try {
+            const response = await fetch("{{ path('app_register') }}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Başarılı kayıt - form temizle
+                document.getElementById('register-form').reset();
+                
+                // Başarı mesajı göster
+                const errorDiv = document.getElementById('register-error');
+                errorDiv.className = 'mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded';
+                errorDiv.textContent = data.message;
+                errorDiv.classList.remove('hidden');
+                
+                // 2 saniye sonra giriş tabına geç
+                setTimeout(() => switchLoginTab('login'), 2000);
+            } else {
+                // Hata mesajı göster
+                const errorDiv = document.getElementById('register-error');
+                errorDiv.className = 'mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded';
+                errorDiv.textContent = data.message;
+                errorDiv.classList.remove('hidden');
+            }
+        } catch (error) {
+            console.error('Register hatası:', error);
+            const errorDiv = document.getElementById('register-error');
+            errorDiv.className = 'mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded';
+            errorDiv.textContent = 'Kayıt sırasında hata oluştu';
+            errorDiv.classList.remove('hidden');
         }
     });
 </script>

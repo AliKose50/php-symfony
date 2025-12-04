@@ -36,7 +36,7 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
             return new RedirectResponse($this->router->generate('admin'));
         }
 
-        // Normal kullanıcı ise hesap sayfasına yönlendir
-        return new RedirectResponse($this->router->generate('app_account_profile'));
+        // Normal kullanıcı ise ana sayfaya yönlendir
+        return new RedirectResponse($this->router->generate('app_home'));
     }
 }

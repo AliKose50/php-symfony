@@ -1,0 +1,90 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Ödeme Başarılı{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-gray-50">
+    {% include 'partials/_navbar.html.twig' %}
+
+    <main class="pt-24 container mx-auto px-4 py-8">
+        <div class="max-w-2xl mx-auto">
+            <div class="bg-white rounded-lg shadow p-8 text-center">
+                <!-- Başarı İkonu -->
+                <div class="mb-6">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full">
+                        <i data-lucide="check-circle" class="w-8 h-8 text-green-600"></i>
+                    </div>
+                </div>
+
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Ödeme Başarılı!</h1>
+                <p class="text-gray-600 mb-8">Siparişiniz başarıyla alınmıştır. Kargo takibini e-posta adresinizde alacaksınız.</p>
+
+                <!-- Sipariş Detayları -->
+                <div class="bg-gray-50 rounded-lg p-6 mb-8 text-left">
+                    <h2 class="text-lg font-bold text-gray-900 mb-4">Sipariş Detayları</h2>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-gray-600 text-sm">Sipariş Numarası</p>
+                            <p class="text-gray-900 font-bold">#{{ order.id }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600 text-sm">Sipariş Tarihi</p>
+                            <p class="text-gray-900 font-bold">{{ order.createdAt|date('d.m.Y H:i') }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600 text-sm">Ödeme Durumu</p>
+                            <p class="text-gray-900 font-bold text-green-600">✓ Ödendi</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600 text-sm">Toplam Tutar</p>
+                            <p class="text-gray-900 font-bold">{{ order.totalAmount|number_format(2, ',', '.') }}₺</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ürünler -->
+                <div class="bg-gray-50 rounded-lg p-6 mb-8 text-left">
+                    <h2 class="text-lg font-bold text-gray-900 mb-4">Ürünler</h2>
+                    
+                    {% for item in order.items %}
+                    <div class="flex justify-between py-3 border-b last:border-b-0">
+                        <div>
+                            <p class="text-gray-900 font-medium">{{ item.product.name }}</p>
+                            <p class="text-gray-600 text-sm">{{ item.quantity }} x {{ item.price }}₺</p>
+                        </div>
+                        <p class="text-gray-900 font-medium">{{ (item.price * item.quantity)|number_format(2, ',', '.') }}₺</p>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Teslimat Adresi -->
+                <div class="bg-gray-50 rounded-lg p-6 mb-8 text-left">
+                    <h2 class="text-lg font-bold text-gray-900 mb-4">Teslimat Adresi</h2>
+                    
+                    <p class="text-gray-900 font-medium">{{ order.fullName }}</p>
+                    <p class="text-gray-600">{{ order.address }}</p>
+                    <p class="text-gray-600">{{ order.zipCode }} {{ order.district }}/{{ order.city }}</p>
+                    <p class="text-gray-600 mt-2">Telefon: {{ order.phone }}</p>
+                </div>
+
+                <!-- Butonlar -->
+                <div class="flex gap-4">
+                    <a href="{{ path('app_home') }}" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-colors text-center">
+                        Alışverişe Devam Et
+                    </a>
+                    <a href="{{ path('app_account_profile') }}" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg transition-colors text-center">
+                        Hesaplarımı Göster
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        lucide.replace();
+    });
+</script>
+{% endblock %}
