@@ -3,8 +3,8 @@
 {% block title %}Sepetim{% endblock %}
 
 {% block body %}
-    {# Navbar (use default dark variant) #}
-    {{ include('partials/_navbar.html.twig') }}
+    {# Navbar with light background #}
+    {{ include('partials/_navbar.html.twig', { navbar_light: true }) }}
 
     <main class="max-w-5xl mx-auto px-6 py-12 pt-24">
         <h1 class="text-2xl font-bold mb-6">Alışveriş Sepetim</h1>

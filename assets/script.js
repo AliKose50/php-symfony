@@ -92,6 +92,10 @@ function initNavbar() {
 
     if (!navbar) return;
 
+    // Check if navbar is already styled (navbar_light: true means fixed styling, don't change on scroll)
+    const isStyledNavbar = navbar.classList.contains('bg-white') || navbar.classList.contains('text-gray-900');
+    if (isStyledNavbar) return; // Skip scroll effect for pre-styled navbars
+
     window.addEventListener('scroll', () => {
         if (window.scrollY > 20) {
             navbar.classList.remove('bg-transparent', 'py-6');

@@ -20,7 +20,7 @@
   
   </head>
     {# Navbar'ı buraya çağırıyoruz #}
-    {{ include('partials/_navbar.html.twig') }}
+    {{ include('partials/_navbar.html.twig', { navbar_light: true }) }}
 
     {# Sepet partial'ı #}
     {{ include('partials/_cart.html.twig') }}

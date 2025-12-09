@@ -4,7 +4,7 @@
 
 {% block body %}
 <div class="min-h-screen bg-gray-50">
-    {% include 'partials/_navbar.html.twig' %}
+    {% include 'partials/_navbar.html.twig' with { navbar_light: true } %}
 
     <main class="pt-24 container mx-auto px-4 py-8">
         <div class="max-w-2xl mx-auto">
