@@ -1,0 +1,206 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gizlilik Politikası - Lumina{% endblock %}
+
+{% block body %}
+<div class="mt-5 min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <!-- Navbar -->
+    {{ include('partials/_navbar.html.twig') }}
+
+    <main class="container mx-auto px-4 py-12">
+        <div class="max-w-4xl mx-auto">
+            <!-- Başlık -->
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Gizlilik Politikası</h1>
+                <p class="text-xl text-gray-300">Kişisel verilerinizin korunması bizim önceliğimizdir</p>
+            </div>
+
+            <!-- Ana İçerik -->
+            <div class="bg-slate-800 rounded-2xl p-8 md:p-12 shadow-2xl">
+                <!-- Giriş -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold text-white mb-6">Giriş</h2>
+                    <p class="text-gray-300 text-lg leading-relaxed mb-6">
+                        Lumina olarak, kullanıcılarımızın gizliliğini korumak ve kişisel verilerini güvenli bir şekilde
+                        işlemek bizim için önemlidir. Bu gizlilik politikası, web sitemizi kullandığınızda toplanan,
+                        kullanılan ve korunan bilgiler hakkında sizi bilgilendirir.
+                    </p>
+                    <p class="text-gray-300 text-lg leading-relaxed">
+                        Bu politika, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") ve ilgili mevzuata uygun
+                        olarak hazırlanmıştır.
+                    </p>
+                </section>
+
+                <!-- Toplanan Bilgiler -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold text-white mb-6">Toplanan Bilgiler</h2>
+
+                    <div class="space-y-6">
+                        <div class="bg-slate-700 rounded-lg p-6">
+                            <h3 class="text-xl font-semibold text-white mb-4">Kişisel Bilgiler</h3>
+                            <ul class="space-y-2 text-gray-300">
+                                <li>• Ad ve soyad</li>
+                                <li>• E-posta adresi</li>
+                                <li>• Telefon numarası</li>
+                                <li>• Teslimat adresi</li>
+                                <li>• Fatura bilgileri</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-slate-700 rounded-lg p-6">
+                            <h3 class="text-xl font-semibold text-white mb-4">Teknik Bilgiler</h3>
+                            <ul class="space-y-2 text-gray-300">
+                                <li>• IP adresi</li>
+                                <li>• Tarayıcı türü ve sürümü</li>
+                                <li>• İşletim sistemi</li>
+                                <li>• Ziyaret edilen sayfalar</li>
+                                <li>• Oturum bilgileri</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-slate-700 rounded-lg p-6">
+                            <h3 class="text-xl font-semibold text-white mb-4">Çerezler (Cookies)</h3>
+                            <p class="text-gray-300 mb-4">
+                                Web sitemizde kullanıcı deneyimini iyileştirmek için çerezler kullanırız.
+                                Çerezler sayesinde site performansını izler ve kişiselleştirilmiş içerik sunarız.
+                            </p>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-slate-600 p-4 rounded">
+                                    <h4 class="text-white font-semibold mb-2">Zorunlu Çerezler</h4>
+                                    <p class="text-gray-300 text-sm">Site işlevselliği için gerekli</p>
+                                </div>
+                                <div class="bg-slate-600 p-4 rounded">
+                                    <h4 class="text-white font-semibold mb-2">Analitik Çerezler</h4>
+                                    <p class="text-gray-300 text-sm">Site kullanımını analiz eder</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Bilgilerin Kullanımı -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold text-white mb-6">Bilgilerin Kullanımı</h2>
+                    <p class="text-gray-300 text-lg leading-relaxed mb-6">
+                        Toplanan bilgiler aşağıdaki amaçlar için kullanılır:
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-slate-700 p-6 rounded-xl">
+                            <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mb-4">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white mb-3">Sipariş İşleme</h3>
+                            <p class="text-gray-300">Siparişlerinizi hazırlamak ve teslim etmek için</p>
+                        </div>
+
+                        <div class="bg-slate-700 p-6 rounded-xl">
+                            <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mb-4">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white mb-3">İletişim</h3>
+                            <p class="text-gray-300">Size önemli güncellemeler ve teklifler göndermek için</p>
+                        </div>
+
+                        <div class="bg-slate-700 p-6 rounded-xl">
+                            <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mb-4">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white mb-3">Analiz</h3>
+                            <p class="text-gray-300">Site performansını iyileştirmek ve kullanıcı deneyimini geliştirmek için</p>
+                        </div>
+
+                        <div class="bg-slate-700 p-6 rounded-xl">
+                            <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center mb-4">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white mb-3">Güvenlik</h3>
+                            <p class="text-gray-300">Dolandırıcılığı önlemek ve güvenliği sağlamak için</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Bilgi Güvenliği -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold text-white mb-6">Bilgi Güvenliği</h2>
+                    <div class="bg-gradient-to-r from-green-600 to-blue-600 rounded-xl p-6 mb-6">
+                        <div class="flex items-center">
+                            <svg class="w-8 h-8 text-white mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            </svg>
+                            <div>
+                                <h3 class="text-xl font-semibold text-white">SSL Şifreleme</h3>
+                                <p class="text-green-100">Tüm veriler 256-bit SSL sertifikası ile korunmaktadır.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 text-gray-300">
+                        <p>• Kişisel bilgileriniz yetkisiz erişime karşı korunmaktadır</p>
+                        <p>• Verileriniz sadece gerekli olduğu süre boyunca saklanır</p>
+                        <p>• Düzenli güvenlik güncellemeleri yapılır</p>
+                        <p>• Çalışanlarımıza gizlilik eğitimi verilmektedir</p>
+                    </div>
+                </section>
+
+                <!-- Haklarınız -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold text-white mb-6">Haklarınız</h2>
+                    <p class="text-gray-300 text-lg leading-relaxed mb-6">
+                        KVKK kapsamında aşağıdaki haklara sahipsiniz:
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-700 p-4 rounded-lg">
+                            <p class="text-gray-300">• Kişisel verilerinizin işlenip işlenmediğini öğrenme</p>
+                        </div>
+                        <div class="bg-slate-700 p-4 rounded-lg">
+                            <p class="text-gray-300">• Kişisel verileriniz işlenmişse buna ilişkin bilgi talep etme</p>
+                        </div>
+                        <div class="bg-slate-700 p-4 rounded-lg">
+                            <p class="text-gray-300">• Kişisel verilerinizin işlenme amacını ve bunların amacına uygun kullanılıp kullanılmadığını öğrenme</p>
+                        </div>
+                        <div class="bg-slate-700 p-4 rounded-lg">
+                            <p class="text-gray-300">• Yurt içinde veya yurt dışında kişisel verilerinizin aktarıldığı üçüncü kişileri bilme</p>
+                        </div>
+                        <div class="bg-slate-700 p-4 rounded-lg">
+                            <p class="text-gray-300">• Kişisel verilerinizin eksik veya yanlış işlenmiş olması hâlinde bunların düzeltilmesini isteme</p>
+                        </div>
+                        <div class="bg-slate-700 p-4 rounded-lg">
+                            <p class="text-gray-300">• KVKK'nın 7. maddesinde öngörülen şartlar çerçevesinde kişisel verilerinizin silinmesini veya yok edilmesini isteme</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- İletişim -->
+                <section class="text-center bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8">
+                    <h2 class="text-2xl font-bold text-white mb-4">Gizlilik Konusunda Sorularınız mı Var?</h2>
+                    <p class="text-blue-100 mb-6">KVKK haklarınızı kullanmak veya sorularınız için bize ulaşın.</p>
+                    <a href="{{ path('app_contact') }}" class="inline-flex items-center px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors">
+                        İletişim
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
+                </section>
+
+                <!-- Güncelleme -->
+                <section class="mt-8 text-center">
+                    <p class="text-gray-400 text-sm">
+                        Bu gizlilik politikası son olarak 1 Ocak 2024 tarihinde güncellenmiştir.
+                    </p>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    {{ include('partials/_footer.html.twig') }}
+</div>
+{% endblock %}

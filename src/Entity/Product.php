@@ -47,10 +47,17 @@ class Product
     #[ORM\OneToMany(targetEntity: CartItem::class, mappedBy: 'product')]
     private Collection $cartItems;
 
+    /**
+     * @var Collection<int, Favorite>
+     */
+    #[ORM\OneToMany(targetEntity: Favorite::class, mappedBy: 'product')]
+    private Collection $favorites;
+
     public function __construct()
     {
         $this->productImages = new ArrayCollection();
         $this->cartItems = new ArrayCollection();
+        $this->favorites = new ArrayCollection();
         $this->created_at = new \DateTimeImmutable();
     }
 
@@ -185,6 +192,35 @@ class Product
             // set the owning side to null (unless already changed)
             if ($cartItem->getProduct() === $this) {
                 $cartItem->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Favorite>
+     */
+    public function getFavorites(): Collection
+    {
+        return $this->favorites;
+    }
+
+    public function addFavorite(Favorite $favorite): static
+    {
+        if (!$this->favorites->contains($favorite)) {
+            $this->favorites->add($favorite);
+            $favorite->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorite(Favorite $favorite): static
+    {
+        if ($this->favorites->removeElement($favorite)) {
+            if ($favorite->getProduct() === $this) {
+                $favorite->setProduct(null);
             }
         }
 

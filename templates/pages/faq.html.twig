@@ -1,0 +1,190 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sık Sorulan Sorular - Lumina{% endblock %}
+
+{% block body %}
+<div class="mt-5 min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <!-- Navbar -->
+    {{ include('partials/_navbar.html.twig') }}
+
+    <main class="container mx-auto px-4 py-12">
+        <div class="max-w-4xl mx-auto">
+            <!-- Başlık -->
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Sık Sorulan Sorular</h1>
+                <p class="text-xl text-gray-300">En çok sorulan soruların cevapları</p>
+            </div>
+
+            <!-- SSS İçeriği -->
+            <div class="bg-slate-800 rounded-2xl p-8 md:p-12 shadow-2xl">
+                <!-- Siparişler -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold text-white mb-6">Siparişler</h2>
+                    <div class="space-y-6">
+                        <div class="border-b border-slate-700 pb-6">
+                            <button class="faq-toggle w-full text-left flex justify-between items-center text-xl font-semibold text-white hover:text-blue-400 transition-colors">
+                                <span>Siparişimi nasıl takip edebilirim?</span>
+                                <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="faq-content mt-4 text-gray-300 leading-relaxed hidden">
+                                Sipariş takibi için hesabınıza giriş yaptıktan sonra "Siparişlerim" bölümünden
+                                sipariş durumunuzu görüntüleyebilirsiniz. Ayrıca size gönderdiğimiz e-posta ile
+                                kargo takip numarası üzerinden de takip edebilirsiniz.
+                            </div>
+                        </div>
+
+                        <div class="border-b border-slate-700 pb-6">
+                            <button class="faq-toggle w-full text-left flex justify-between items-center text-xl font-semibold text-white hover:text-blue-400 transition-colors">
+                                <span>Siparişimi iptal edebilir miyim?</span>
+                                <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="faq-content mt-4 text-gray-300 leading-relaxed hidden">
+                                Siparişiniz henüz kargoya verilmediyse, müşteri hizmetlerimizle iletişime geçerek
+                                iptal talebinde bulunabilirsiniz. Kargoya verilen siparişler için iade prosedürü
+                                uygulanmaktadır.
+                            </div>
+                        </div>
+
+                        <div class="border-b border-slate-700 pb-6">
+                            <button class="faq-toggle w-full text-left flex justify-between items-center text-xl font-semibold text-white hover:text-blue-400 transition-colors">
+                                <span>Minimum sipariş tutarı var mı?</span>
+                                <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="faq-content mt-4 text-gray-300 leading-relaxed hidden">
+                                Hayır, minimum sipariş tutarı bulunmamaktadır. İstediğiniz kadar ürün sipariş edebilirsiniz.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Ödeme -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold text-white mb-6">Ödeme</h2>
+                    <div class="space-y-6">
+                        <div class="border-b border-slate-700 pb-6">
+                            <button class="faq-toggle w-full text-left flex justify-between items-center text-xl font-semibold text-white hover:text-blue-400 transition-colors">
+                                <span>Hangi ödeme yöntemlerini kabul ediyorsunuz?</span>
+                                <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="faq-content mt-4 text-gray-300 leading-relaxed hidden">
+                                Kredi kartı, banka kartı, havale/EFT ve kapıda ödeme seçeneklerini kabul ediyoruz.
+                                Tüm ödemeler güvenli SSL sertifikası ile korunmaktadır.
+                            </div>
+                        </div>
+
+                        <div class="border-b border-slate-700 pb-6">
+                            <button class="faq-toggle w-full text-left flex justify-between items-center text-xl font-semibold text-white hover:text-blue-400 transition-colors">
+                                <span>Taksit seçenekleri var mı?</span>
+                                <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="faq-content mt-4 text-gray-300 leading-relaxed hidden">
+                                Evet, tüm kredi kartları ile 3-12 aya varan taksit seçenekleri mevcuttur.
+                                Taksit oranları bankanıza göre değişiklik gösterebilir.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Kargo ve İade -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold text-white mb-6">Kargo ve İade</h2>
+                    <div class="space-y-6">
+                        <div class="border-b border-slate-700 pb-6">
+                            <button class="faq-toggle w-full text-left flex justify-between items-center text-xl font-semibold text-white hover:text-blue-400 transition-colors">
+                                <span>Kargo ücreti ne kadar?</span>
+                                <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="faq-content mt-4 text-gray-300 leading-relaxed hidden">
+                                150 TL ve üzeri siparişlerde kargo ücretsizdir. 150 TL altı siparişlerde
+                                15 TL kargo ücreti uygulanmaktadır.
+                            </div>
+                        </div>
+
+                        <div class="border-b border-slate-700 pb-6">
+                            <button class="faq-toggle w-full text-left flex justify-between items-center text-xl font-semibold text-white hover:text-blue-400 transition-colors">
+                                <span>İade şartları nelerdir?</span>
+                                <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="faq-content mt-4 text-gray-300 leading-relaxed hidden">
+                                Ürünlerinizi teslim aldıktan sonra 14 gün içerisinde iade edebilirsiniz.
+                                Ürün kullanılmamış ve orijinal ambalajında olmalıdır. Detaylı bilgi için
+                                <a href="{{ path('app_shipping') }}" class="text-blue-400 hover:underline">Kargo ve İade</a> sayfamızı inceleyebilirsiniz.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Diğer -->
+                <section>
+                    <h2 class="text-3xl font-bold text-white mb-6">Diğer</h2>
+                    <div class="space-y-6">
+                        <div class="border-b border-slate-700 pb-6">
+                            <button class="faq-toggle w-full text-left flex justify-between items-center text-xl font-semibold text-white hover:text-blue-400 transition-colors">
+                                <span>Güvenliğiniz bizim için önemli</span>
+                                <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="faq-content mt-4 text-gray-300 leading-relaxed hidden">
+                                Tüm işlemleriniz 256-bit SSL sertifikası ile korunmaktadır. Kişisel bilgileriniz
+                                hiçbir şekilde üçüncü şahıslarla paylaşılmamaktadır.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Yardım CTA -->
+                <section class="text-center bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 mt-12">
+                    <h2 class="text-2xl font-bold text-white mb-4">Daha Fazla Yardıma İhtiyacınız Var mı?</h2>
+                    <p class="text-blue-100 mb-6">Sorularınız için bize ulaşmaktan çekinmeyin.</p>
+                    <a href="{{ path('app_contact') }}" class="inline-flex items-center px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors">
+                        İletişim
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    {{ include('partials/_footer.html.twig') }}
+</div>
+
+<script>
+// FAQ Toggle Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const toggles = document.querySelectorAll('.faq-toggle');
+
+    toggles.forEach(toggle => {
+        toggle.addEventListener('click', function() {
+            const content = this.nextElementSibling;
+            const icon = this.querySelector('svg');
+
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

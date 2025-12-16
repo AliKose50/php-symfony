@@ -1,9 +1,9 @@
 2<!-- Categories Section -->
-<section class="py-16 bg-white">
+<section class="py-16 bg-gradient-to-r from-slate-800 to-purple-800">
   <div class="container mx-auto px-4 md:px-6">
     <div class="flex items-center justify-between mb-8">
-      <h2 class="text-2xl font-bold text-gray-900">Kategoriler</h2>
-      <a href="#" class="text-primary-600 font-medium hover:underline">Tümünü Gör</a>
+      <h2 class="text-2xl font-bold text-white">Kategoriler</h2>
+      <a href="#" class="text-blue-400 font-medium hover:underline">Tümünü Gör</a>
     </div>
     
     <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -42,193 +42,32 @@
 </section>
 
 <!-- Products Section -->
-<section class="py-16 container mx-auto px-4 md:px-6">
-  <div class="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
-    <div>
-      <h2 class="text-3xl font-bold text-gray-900 mb-2">Popüler Ürünler</h2>
-      <p class="text-gray-500">Sezonun en çok tercih edilen parçalarını keşfedin.</p>
-    </div>
-    
-    <div class="flex items-center gap-3">
-      <button class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 shadow-sm transition-colors">
-        <i data-lucide="filter" class="w-4 h-4"></i>
-        <span>Filtrele</span>
-      </button>
-      <select class="px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-100 shadow-sm cursor-pointer">
-        <option>Önerilen Sıralama</option>
-        <option>En Düşük Fiyat</option>
-        <option>En Yüksek Fiyat</option>
-        <option>En Yeniler</option>
-      </select>
-    </div>
-  </div>
 
-  <!-- Product Grid -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-    <!-- Product 1 -->
-    <div class="group bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col h-full">
-      <div class="relative aspect-square overflow-hidden bg-gray-100">
-        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-        <div class="absolute top-3 left-3 flex flex-col gap-2">
-          <span class="bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-md shadow-sm">YENİ</span>
-          <span class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md shadow-sm">İNDİRİM</span>
-        </div>
-        <button class="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-colors opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 duration-300">
-          <i data-lucide="heart" class="w-4 h-4"></i>
-        </button>
-      </div>
-      <div class="p-4 flex flex-col flex-grow">
-        <div class="text-xs text-gray-500 mb-1 font-medium uppercase tracking-wider">Elektronik</div>
-        <h3 class="font-semibold text-gray-900 text-lg mb-2 line-clamp-2 hover:text-primary-600 transition-colors cursor-pointer">Kablosuz Premium Kulaklık</h3>
-        <div class="flex items-center mb-3">
-          <div class="flex text-yellow-400">
-            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-          </div>
-          <span class="text-xs text-gray-500 ml-1">(4.8)</span>
-        </div>
-        <div class="mt-auto flex items-center justify-between pt-4 border-t border-gray-50">
-          <div class="flex flex-col">
-            <span class="text-sm text-gray-400 line-through">4.200,00 ₺</span>
-            <span class="text-lg font-bold text-primary-600">3.499,90 ₺</span>
-          </div>
-          <button onclick="addToCart(1)" class="p-2.5 bg-gray-900 text-white rounded-lg hover:bg-primary-600 active:scale-95 transition-all duration-200 shadow-md group-hover:shadow-lg">
-            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Product 2 -->
-    <div class="group bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col h-full">
-      <div class="relative aspect-square overflow-hidden bg-gray-100">
-        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-      </div>
-      <div class="p-4 flex flex-col flex-grow">
-        <div class="text-xs text-gray-500 mb-1 font-medium uppercase tracking-wider">Moda</div>
-        <h3 class="font-semibold text-gray-900 text-lg mb-2 line-clamp-2 hover:text-primary-600 transition-colors cursor-pointer">Analog Klasik Saat</h3>
-        <div class="flex items-center mb-3">
-          <div class="flex text-yellow-400">
-            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-            <i data-lucide="star" class="w-3 h-3 text-gray-300"></i>
-          </div>
-          <span class="text-xs text-gray-500 ml-1">(4.5)</span>
-        </div>
-        <div class="mt-auto flex items-center justify-between pt-4 border-t border-gray-50">
-          <div class="flex flex-col">
-            <span class="text-lg font-bold text-primary-600">1.850,00 ₺</span>
-          </div>
-          <button onclick="toggleCart()" class="p-2.5 bg-gray-900 text-white rounded-lg hover:bg-primary-600 active:scale-95 transition-all duration-200 shadow-md group-hover:shadow-lg">
-            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Product 3 -->
-    <div class="group bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col h-full">
-      <div class="relative aspect-square overflow-hidden bg-gray-100">
-        <img src="https://images.unsplash.com/photo-1592078615290-033ee584e267?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-      </div>
-      <div class="p-4 flex flex-col flex-grow">
-        <div class="text-xs text-gray-500 mb-1 font-medium uppercase tracking-wider">Ev & Yaşam</div>
-        <h3 class="font-semibold text-gray-900 text-lg mb-2 line-clamp-2 hover:text-primary-600 transition-colors cursor-pointer">Ergonomik Ofis Sandalyesi</h3>
-        <div class="flex items-center mb-3">
-          <div class="flex text-yellow-400">
-            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-            <i data-lucide="star" class="w-3 h-3 text-gray-300"></i>
-          </div>
-          <span class="text-xs text-gray-500 ml-1">(4.2)</span>
-        </div>
-        <div class="mt-auto flex items-center justify-between pt-4 border-t border-gray-50">
-          <div class="flex flex-col">
-            <span class="text-lg font-bold text-primary-600">2.450,00 ₺</span>
-          </div>
-          <button onclick="toggleCart()" class="p-2.5 bg-gray-900 text-white rounded-lg hover:bg-primary-600 active:scale-95 transition-all duration-200 shadow-md group-hover:shadow-lg">
-            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Product 4 -->
-    <div class="group bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col h-full">
-      <div class="relative aspect-square overflow-hidden bg-gray-100">
-        <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-        <div class="absolute top-3 left-3 flex flex-col gap-2">
-          <span class="bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-md shadow-sm">YENİ</span>
-          <span class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md shadow-sm">İNDİRİM</span>
-        </div>
-        <button class="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-colors opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 duration-300">
-          <i data-lucide="heart" class="w-4 h-4"></i>
-        </button>
-      </div>
-      <div class="p-4 flex flex-col flex-grow">
-        <div class="text-xs text-gray-500 mb-1 font-medium uppercase tracking-wider">Elektronik</div>
-        <h3 class="font-semibold text-gray-900 text-lg mb-2 line-clamp-2 hover:text-primary-600 transition-colors cursor-pointer">Profesyonel DSLR Kamera</h3>
-        <div class="flex items-center mb-3">
-          <div class="flex text-yellow-400">
-            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-          </div>
-          <span class="text-xs text-gray-500 ml-1">(4.9)</span>
-        </div>
-        <div class="mt-auto flex items-center justify-between pt-4 border-t border-gray-50">
-          <div class="flex flex-col">
-            <span class="text-sm text-gray-400 line-through">21.000,00 ₺</span>
-            <span class="text-lg font-bold text-primary-600">18.900,00 ₺</span>
-          </div>
-          <button onclick="toggleCart()" class="p-2.5 bg-gray-900 text-white rounded-lg hover:bg-primary-600 active:scale-95 transition-all duration-200 shadow-md group-hover:shadow-lg">
-            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="mt-16 text-center">
-    <button class="px-8 py-3 bg-white border border-gray-300 text-gray-900 font-medium rounded-full hover:bg-gray-50 transition-colors shadow-sm">
-      Daha Fazla Göster
-    </button>
-  </div>
-</section>
 
 <!-- Features Banner -->
-<section class="py-20 bg-primary-50">
+<section class="py-20 bg-gradient-to-r from-purple-800 to-slate-800">
   <div class="container mx-auto px-4 md:px-6">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
       <div class="p-6">
-        <div class="w-16 h-16 bg-white text-primary-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm text-2xl">
+        <div class="w-16 h-16 bg-slate-700 text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm text-2xl">
           🚚
         </div>
-        <h3 class="text-lg font-bold mb-2">Hızlı Teslimat</h3>
-        <p class="text-gray-600">Siparişleriniz aynı gün kargoda.</p>
+        <h3 class="text-lg font-bold text-white mb-2">Hızlı Teslimat</h3>
+        <p class="text-gray-300">Siparişleriniz aynı gün kargoda.</p>
       </div>
       <div class="p-6">
-        <div class="w-16 h-16 bg-white text-primary-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm text-2xl">
+        <div class="w-16 h-16 bg-slate-700 text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm text-2xl">
           🛡️
         </div>
-        <h3 class="text-lg font-bold mb-2">Güvenli Ödeme</h3>
-        <p class="text-gray-600">256-bit SSL koruması ile güvendesiniz.</p>
+        <h3 class="text-lg font-bold text-white mb-2">Güvenli Ödeme</h3>
+        <p class="text-gray-300">256-bit SSL koruması ile güvendesiniz.</p>
       </div>
       <div class="p-6">
-        <div class="w-16 h-16 bg-white text-primary-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm text-2xl">
+        <div class="w-16 h-16 bg-slate-700 text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm text-2xl">
           ↩️
         </div>
-        <h3 class="text-lg font-bold mb-2">Kolay İade</h3>
-        <p class="text-gray-600">14 gün içinde koşulsuz iade hakkı.</p>
+        <h3 class="text-lg font-bold text-white mb-2">Kolay İade</h3>
+        <p class="text-gray-300">14 gün içinde koşulsuz iade hakkı.</p>
       </div>
     </div>
   </div>

@@ -1,0 +1,200 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Kargo ve İade - Lumina{% endblock %}
+
+{% block body %}
+<div class="mt-5 min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <!-- Navbar -->
+    {{ include('partials/_navbar.html.twig') }}
+
+    <main class="container mx-auto px-4 py-12">
+        <div class="max-w-4xl mx-auto">
+            <!-- Başlık -->
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Kargo ve İade</h1>
+                <p class="text-xl text-gray-300">Teslimat ve iade politikalarımız</p>
+            </div>
+
+            <!-- Ana İçerik -->
+            <div class="bg-slate-800 rounded-2xl p-8 md:p-12 shadow-2xl">
+                <!-- Kargo Bilgileri -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold text-white mb-6">Kargo Bilgileri</h2>
+
+                    <div class="grid md:grid-cols-2 gap-8 mb-8">
+                        <div class="bg-slate-700 p-6 rounded-xl">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-white">Ücretsiz Kargo</h3>
+                            </div>
+                            <p class="text-gray-300">150 TL ve üzeri siparişlerde kargo ücretsiz!</p>
+                        </div>
+
+                        <div class="bg-slate-700 p-6 rounded-xl">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-white">Hızlı Teslimat</h3>
+                            </div>
+                            <p class="text-gray-300">İstanbul içi 1-2 gün, Türkiye geneli 2-4 gün</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-2xl font-semibold text-white mb-4">Kargo Ücretleri</h3>
+                            <div class="bg-slate-700 rounded-lg p-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <span class="text-gray-300">150 TL altı siparişler</span>
+                                    <span class="text-white font-semibold">15 TL</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-300">150 TL ve üzeri siparişler</span>
+                                    <span class="text-green-400 font-semibold">Ücretsiz</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-2xl font-semibold text-white mb-4">Teslimat Süreleri</h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-slate-700 rounded-lg p-6">
+                                    <h4 class="text-lg font-semibold text-white mb-2">İstanbul</h4>
+                                    <p class="text-gray-300">Sipariş onayından sonra 1-2 iş günü</p>
+                                </div>
+                                <div class="bg-slate-700 rounded-lg p-6">
+                                    <h4 class="text-lg font-semibold text-white mb-2">Ankara / İzmir</h4>
+                                    <p class="text-gray-300">Sipariş onayından sonra 2-3 iş günü</p>
+                                </div>
+                                <div class="bg-slate-700 rounded-lg p-6">
+                                    <h4 class="text-lg font-semibold text-white mb-2">Diğer İller</h4>
+                                    <p class="text-gray-300">Sipariş onayından sonra 3-5 iş günü</p>
+                                </div>
+                                <div class="bg-slate-700 rounded-lg p-6">
+                                    <h4 class="text-lg font-semibold text-white mb-2">Adrese Teslimat</h4>
+                                    <p class="text-gray-300">Hafta içi 09:00-18:00 arası</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- İade ve Değişim -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold text-white mb-6">İade ve Değişim</h2>
+
+                    <div class="bg-gradient-to-r from-green-600 to-blue-600 rounded-xl p-6 mb-8">
+                        <div class="flex items-center">
+                            <svg class="w-8 h-8 text-white mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div>
+                                <h3 class="text-xl font-semibold text-white">14 Gün İçinde Ücretsiz İade</h3>
+                                <p class="text-green-100">Teslim tarihinden itibaren 14 gün içerisinde iade edebilirsiniz.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-2xl font-semibold text-white mb-4">İade Koşulları</h3>
+                            <ul class="space-y-3 text-gray-300">
+                                <li class="flex items-start">
+                                    <svg class="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Ürün kullanılmamış ve orijinal ambalajında olmalıdır
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Fatura ve teslimat notası ile birlikte gönderilmelidir
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Ürün hasarsız ve eksiksiz olmalıdır
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Kişisel bakım ürünleri ve kozmetikler iade edilemez
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="text-2xl font-semibold text-white mb-4">İade Süreci</h3>
+                            <div class="bg-slate-700 rounded-lg p-6">
+                                <div class="space-y-4">
+                                    <div class="flex items-start">
+                                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                            <span class="text-white font-semibold">1</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-white font-semibold">İade Talebi</h4>
+                                            <p class="text-gray-300">Müşteri hizmetlerimizle iletişime geçin</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                            <span class="text-white font-semibold">2</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-white font-semibold">Onay</h4>
+                                            <p class="text-gray-300">İade talebiniz onaylandıktan sonra kargo etiketi gönderilir</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                            <span class="text-white font-semibold">3</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-white font-semibold">Kargo</h4>
+                                            <p class="text-gray-300">Ürünü hazırlayıp kargoya verin</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                            <span class="text-white font-semibold">4</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-white font-semibold">İade</h4>
+                                            <p class="text-gray-300">Ürün kontrol edildikten sonra iadeniz gerçekleştirilir</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Yardım CTA -->
+                <section class="text-center bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-8">
+                    <h2 class="text-2xl font-bold text-white mb-4">Yardıma İhtiyacınız Var mı?</h2>
+                    <p class="text-purple-100 mb-6">Kargo ve iade konusunda sorularınız için bize ulaşın.</p>
+                    <a href="{{ path('app_contact') }}" class="inline-flex items-center px-6 py-3 bg-white text-purple-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors">
+                        İletişim
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    {{ include('partials/_footer.html.twig') }}
+</div>
+{% endblock %}

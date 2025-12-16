@@ -85,28 +85,10 @@ final class CartController extends AbstractController
     }
 
     #[Route('/view', name: 'view')]
-    public function view(CartRepository $cartRepository): Response
+    public function view(): Response
     {
-        $user = $this->getUser();
-        $cart = $cartRepository->findOneBy(['full_name' => $user]);
-
-        // Calculate cartCount = total quantity of all items
-        $cartCount = 0;
-        $total = 0.0;
-        if ($cart) {
-            foreach ($cart->getCartItems() as $item) {
-                $cartCount += (int) $item->getQuantity();
-                $price = (float) $item->getProduct()->getPrice();
-                $qty = (int) $item->getQuantity();
-                $total += $price * $qty;
-            }
-        }
-
-        return $this->render('cart/index.html.twig', [
-            'cart' => $cart,
-            'cartCount' => $cartCount,
-            'cartTotal' => $total,
-        ]);
+        // JavaScript ile veri çekildiği için sadece template render ediliyor
+        return $this->render('cart/index.html.twig');
     }
 
     #[Route('/update/{itemId}', name: 'update', methods: ['POST'])]
@@ -194,6 +176,52 @@ final class CartController extends AbstractController
             'success' => true,
             'cartCount' => $cartCount,
             'cartTotal' => $cartTotal,
+        ]);
+    }
+
+    #[Route('/api/view', name: 'api_view', methods: ['GET'])]
+    public function apiView(CartRepository $cartRepository): JsonResponse
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return new JsonResponse(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        // JOIN ile tüm verileri bir seferde çek (N+1 query problemi çözümü)
+        $cart = $cartRepository->findCartWithItems($user);
+
+        $cartCount = 0;
+        $total = 0.0;
+        $items = [];
+        if ($cart) {
+            foreach ($cart->getCartItems() as $item) {
+                $cartCount += (int) $item->getQuantity();
+                $price = (float) $item->getProduct()->getPrice();
+                $qty = (int) $item->getQuantity();
+                $total += $price * $qty;
+
+                $img = $item->getProduct()->getProductImages()->first();
+                $imageUrl = $img ? '/uploads/product_images/' . $img->getImageUrl() : null;
+
+                $items[] = [
+                    'id' => $item->getId(),
+                    'product' => [
+                        'id' => $item->getProduct()->getId(),
+                        'name' => $item->getProduct()->getName(),
+                        'price' => $price,
+                        'category' => $item->getProduct()->getCategory()->getName(),
+                        'image' => $imageUrl,
+                    ],
+                    'quantity' => $qty,
+                    'lineTotal' => $price * $qty,
+                ];
+            }
+        }
+
+        return new JsonResponse([
+            'cartCount' => $cartCount,
+            'cartTotal' => $total,
+            'items' => $items,
         ]);
     }
 }

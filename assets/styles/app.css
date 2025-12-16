@@ -1,4 +1,4 @@
-body {
+/* body {
     background-color: rgb(249, 253, 255);
 }
 
@@ -8,6 +8,7 @@ body {
 }
 
 /* Custom scrollbar */
+/*
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -26,6 +27,7 @@ body {
 }
 
 /* Transitions */
+/*
 .slide {
     position: absolute;
     inset: 0;
@@ -57,4 +59,4 @@ body {
 .cart-backdrop.open {
     opacity: 1;
     pointer-events: auto;
-}
+} */

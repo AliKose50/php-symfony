@@ -31,13 +31,29 @@ class CartRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Cart
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findCartWithItems($user): ?Cart
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.cartItems', 'ci')
+            ->leftJoin('ci.product', 'p')
+            ->leftJoin('p.productImages', 'pi')
+            ->leftJoin('p.category', 'cat')
+            ->where('c.full_name = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findCartCountByUser($user): int
+    {
+        $result = $this->createQueryBuilder('c')
+            ->select('SUM(ci.quantity) as total')
+            ->leftJoin('c.cartItems', 'ci')
+            ->where('c.full_name = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return (int) $result;
+    }
 }

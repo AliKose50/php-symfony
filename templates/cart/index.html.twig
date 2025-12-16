@@ -3,69 +3,228 @@
 {% block title %}Sepetim{% endblock %}
 
 {% block body %}
-    {# Navbar with light background #}
-    {{ include('partials/_navbar.html.twig', { navbar_light: true }) }}
+<div class="mt-5 min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    {# Navbar #}
+    {{ include('partials/_navbar.html.twig') }}
 
-    <main class="max-w-5xl mx-auto px-6 py-12 pt-24">
-        <h1 class="text-2xl font-bold mb-6">Alışveriş Sepetim</h1>
+    <main class="max-w-5xl mx-auto px-6 py-12">
+        <h1 class="text-2xl font-bold mb-6 text-white">Alışveriş Sepetim</h1>
 
-        {% if cart is not null and cart.cartItems|length > 0 %}
-            <div class="space-y-6" style="margin-top:50px">
-                {% for item in cart.cartItems %}
-                    <div id="cart-item-{{ item.id }}" class="flex items-center gap-6 p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow">
-                        <div class="w-28 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
-                            {% set img = item.product.productImages|first %}
-                            {% if img %}
-                                <img src="{{ asset('uploads/product_images/' ~ img.imageUrl) }}" class="w-full h-28 object-cover" loading="lazy" />
-                            {% else %}
-                                <div class="w-full h-28 flex items-center justify-center text-gray-400">Resim yok</div>
-                            {% endif %}
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="font-semibold text-lg mb-1">{{ item.product.name }}</h3>
-                            <p class="text-sm text-gray-500 mb-2">{{ item.product.category.name }}</p>
-                            <div class="flex items-center gap-3">
-                                <button onclick="updateCartItem({{ item.id }}, -1)" class="px-3 py-1 border rounded">-</button>
-                                <span class="font-medium px-3">{{ item.quantity }}</span>
-                                <button onclick="updateCartItem({{ item.id }}, 1)" class="px-3 py-1 border rounded">+</button>
-                            </div>
-                        </div>
-                        <div class="text-right w-40">
-                            <div class="text-sm text-gray-500">Birim Fiyat</div>
-                            <div class="font-semibold text-lg">{{ item.product.price|number_format(2, ',', '.') }} ₺</div>
-                            <div class="text-sm text-gray-500 mt-2">Toplam</div>
-                            <div id="item-total-{{ item.id }}" class="font-bold text-lg text-primary-600">{{ (item.product.price * item.quantity)|number_format(2, ',', '.') }} ₺</div>
-                            <button onclick="removeCartItem({{ item.id }})" class="mt-2 text-red-500 text-sm">Sepetten Kaldır</button>
-                        </div>
-                    </div>
-                {% endfor %}
+        <!-- Loading State -->
+        <div id="loading-state" class="flex justify-center items-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+            <span class="ml-3 text-white">Sepet yükleniyor...</span>
+        </div>
 
-                <div class="flex justify-end">
-                    <div class="w-full max-w-md bg-white border rounded-lg p-6 shadow-sm">
-                        <div class="flex justify-between text-gray-600 mb-2">
-                            <span>Ara Toplam</span>
-                            <span id="cart-subtotal">{{ cartTotal|default(0)|number_format(2, ',', '.') }} ₺</span>
-                        </div>
-                        <div class="flex justify-between text-gray-600 mb-2">
-                            <span>Kargo</span>
-                            <span class="text-green-600 font-medium">Ücretsiz</span>
-                        </div>
-                        <div class="flex justify-between text-xl font-bold text-gray-900 pt-3 border-t">
-                            <span>Toplam</span>
-                            <span id="cart-total">{{ cartTotal|default(0)|number_format(2, ',', '.') }} ₺</span>
-                        </div>
-                        <div class="mt-4">
-                            <a href="{{ path('app_checkout') }}" class="block text-center bg-primary-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-primary-700 transition-colors">Ödemeye Geç</a>
-                        </div>
-                    </div>
+        <!-- Empty Cart State -->
+        <div id="empty-cart" class="hidden p-8 bg-white rounded-lg text-center">
+            <p class="text-gray-700">Sepetinizde ürün bulunmuyor.</p>
+            <a href="{{ path('app_product') }}" class="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">Alışverişe Başla</a>
+        </div>
+
+        <!-- Cart Items Container -->
+        <div id="cart-items" class="hidden space-y-6" style="margin-top:50px">
+            <!-- Items will be loaded here by JavaScript -->
+        </div>
+
+        <!-- Cart Summary -->
+        <div id="cart-summary" class="hidden flex justify-end">
+            <div class="w-full max-w-md bg-white border rounded-lg p-6 shadow-sm">
+                <div class="flex justify-between text-gray-600 mb-2">
+                    <span>Ara Toplam</span>
+                    <span id="cart-subtotal">0,00 ₺</span>
+                </div>
+                <div class="flex justify-between text-gray-600 mb-2">
+                    <span>Kargo</span>
+                    <span class="text-green-600 font-medium">Ücretsiz</span>
+                </div>
+                <div class="flex justify-between text-xl font-bold text-gray-900 pt-3 border-t">
+                    <span>Toplam</span>
+                    <span id="cart-total">0,00 ₺</span>
+                </div>
+                <div class="mt-4">
+                    <a href="{{ path('app_checkout') }}" class="block text-center bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors">Ödemeye Geç</a>
                 </div>
             </div>
-        {% else %}
-            <div class="p-8 bg-white rounded-lg text-center">
-                <p class="text-gray-700">Sepetinizde ürün bulunmuyor.</p>
-                <a href="{{ path('app_product') }}" class="mt-4 inline-block bg-primary-600 text-white px-4 py-2 rounded">Alışverişe Başla</a>
-            </div>
-        {% endif %}
+        </div>
     </main>
 
+    {{ include('partials/_footer.html.twig') }}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadCart();
+});
+
+async function loadCart() {
+    try {
+        const response = await fetch('/cart/api/view', {
+            credentials: 'same-origin'
+        });
+
+        if (!response.ok) {
+            throw new Error('Sepet yüklenirken hata oluştu');
+        }
+
+        const data = await response.json();
+
+        // Hide loading
+        document.getElementById('loading-state').classList.add('hidden');
+
+        if (data.items && data.items.length > 0) {
+            // Show cart items and summary
+            document.getElementById('cart-items').classList.remove('hidden');
+            document.getElementById('cart-summary').classList.remove('hidden');
+
+            renderCartItems(data.items);
+            updateCartSummary(data.cartTotal);
+        } else {
+            // Show empty cart
+            document.getElementById('empty-cart').classList.remove('hidden');
+        }
+
+    } catch (error) {
+        console.error('Sepet yükleme hatası:', error);
+        document.getElementById('loading-state').innerHTML = `
+            <div class="text-center py-12">
+                <p class="text-red-400">Sepet yüklenirken hata oluştu.</p>
+                <button onclick="loadCart()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    Tekrar Dene
+                </button>
+            </div>
+        `;
+    }
+}
+
+function renderCartItems(items) {
+    const container = document.getElementById('cart-items');
+    container.innerHTML = '';
+
+    items.forEach(item => {
+        const itemHtml = `
+            <div id="cart-item-${item.id}" class="flex items-center gap-6 p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow">
+                <div class="w-28 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                    ${item.product.image ?
+                        `<img src="${item.product.image}" class="w-full h-28 object-cover" loading="lazy" />` :
+                        `<div class="w-full h-28 flex items-center justify-center text-gray-400">Resim yok</div>`
+                    }
+                </div>
+                <div class="flex-1">
+                    <h3 class="font-semibold text-lg mb-1">${item.product.name}</h3>
+                    <p class="text-sm text-gray-500 mb-2">${item.product.category}</p>
+                    <div class="flex items-center gap-3">
+                        <button onclick="updateCartItem(${item.id}, -1)" class="px-3 py-1 border rounded hover:bg-gray-50">-</button>
+                        <span class="font-medium px-3">${item.quantity}</span>
+                        <button onclick="updateCartItem(${item.id}, 1)" class="px-3 py-1 border rounded hover:bg-gray-50">+</button>
+                    </div>
+                </div>
+                <div class="text-right w-40">
+                    <div class="text-sm text-gray-500">Birim Fiyat</div>
+                    <div class="font-semibold text-lg">${formatPrice(item.product.price)}</div>
+                    <div class="text-sm text-gray-500 mt-2">Toplam</div>
+                    <div id="item-total-${item.id}" class="font-bold text-lg text-blue-600">${formatPrice(item.lineTotal)}</div>
+                    <button onclick="removeCartItem(${item.id})" class="mt-2 text-red-500 text-sm hover:text-red-700">Sepetten Kaldır</button>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', itemHtml);
+    });
+}
+
+function updateCartSummary(total) {
+    const formattedTotal = formatPrice(total);
+    document.getElementById('cart-subtotal').textContent = formattedTotal;
+    document.getElementById('cart-total').textContent = formattedTotal;
+}
+
+async function updateCartItem(itemId, change) {
+    try {
+        const response = await fetch(`/cart/update/${itemId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `quantity=${change}`,
+            credentials: 'same-origin'
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            // Reload cart to get updated data
+            loadCart();
+            showFlashMessage('Sepet güncellendi!', 'success');
+        } else {
+            showFlashMessage('Güncelleme başarısız', 'error');
+        }
+    } catch (error) {
+        console.error('Sepet güncelleme hatası:', error);
+        showFlashMessage('Bir hata oluştu', 'error');
+    }
+}
+
+async function removeCartItem(itemId) {
+    if (!confirm('Bu ürünü sepetten kaldırmak istediğinizden emin misiniz?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/cart/remove/${itemId}`, {
+            method: 'POST',
+            credentials: 'same-origin'
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            // Remove item from DOM
+            const itemElement = document.getElementById(`cart-item-${itemId}`);
+            if (itemElement) {
+                itemElement.remove();
+            }
+
+            // Reload cart to update totals
+            loadCart();
+            showFlashMessage('Ürün sepetten kaldırıldı!', 'success');
+        } else {
+            showFlashMessage('Kaldırma başarısız', 'error');
+        }
+    } catch (error) {
+        console.error('Ürün kaldırma hatası:', error);
+        showFlashMessage('Bir hata oluştu', 'error');
+    }
+}
+
+function formatPrice(price) {
+    return new Intl.NumberFormat('tr-TR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(price) + ' ₺';
+}
+
+function showFlashMessage(message, type) {
+    // Remove existing flash messages
+    const existing = document.querySelectorAll('.flash-message');
+    existing.forEach(el => el.remove());
+
+    // Create new flash message
+    const flashDiv = document.createElement('div');
+    flashDiv.className = `flash-message fixed top-4 right-4 px-6 py-3 rounded-lg text-white z-50 shadow-lg ${
+        type === 'success' ? 'bg-green-600' :
+        type === 'error' ? 'bg-red-600' : 'bg-blue-600'
+    }`;
+    flashDiv.innerHTML = `
+        <div class="flex items-center">
+            <span class="mr-2">${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
+            <span>${message}</span>
+        </div>
+    `;
+    document.body.appendChild(flashDiv);
+
+    setTimeout(() => {
+        flashDiv.remove();
+    }, 3000);
+}
+</script>
 {% endblock %}

@@ -3,40 +3,181 @@
 {% block title %}{{ product.name }} - Ürün Detayı{% endblock %}
 
 {% block body %}
-    {{ include('partials/_navbar.html.twig', { navbar_light: true }) }}
+<div class="mt-5 min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    {{ include('partials/_navbar.html.twig') }}
 
     <main class="max-w-6xl mx-auto px-6 py-12 pt-24">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="md:col-span-2">
-                <div class="bg-white rounded-lg p-6 shadow">
+                <div class="bg-slate-800 rounded-lg p-6 shadow-lg border border-slate-700">
                     {% set mainImage = product.productImages|first %}
                     {% if mainImage %}
-                        <img src="{{ asset('uploads/product_images/' ~ mainImage.imageUrl) }}" class="w-full h-96 object-cover rounded-lg" />
+                        {% if mainImage.imageUrl starts with 'http' %}
+                            <img src="{{ mainImage.imageUrl }}" class="w-full h-96 object-cover rounded-lg" />
+                        {% else %}
+                            <img src="{{ asset('uploads/product_images/' ~ mainImage.imageUrl) }}" class="w-full h-96 object-cover rounded-lg" />
+                        {% endif %}
                     {% else %}
-                        <div class="w-full h-96 bg-gray-100 flex items-center justify-center rounded-lg">Resim yok</div>
+                        <div class="w-full h-96 bg-slate-700 flex items-center justify-center rounded-lg">
+                            <svg class="w-16 h-16 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
                     {% endif %}
 
-                    <h1 class="text-2xl font-bold mt-4">{{ product.name }}</h1>
-                    <p class="text-gray-600 mt-2">{{ product.category.name }}</p>
-                    <div class="mt-4 text-lg font-bold text-primary-600">{{ product.price|number_format(2, ',', '.') }} ₺</div>
+                    <h1 class="text-3xl font-bold mt-4 text-white">{{ product.name }}</h1>
+                    <p class="text-gray-300 mt-2">{{ product.category.name }}</p>
 
-                    <div class="mt-6 text-gray-700 leading-relaxed">{{ product.description|raw }}</div>
+                    <!-- Yıldız Değerlendirmesi -->
+                    <div class="flex items-center gap-2 mt-4 mb-4">
+                        <div class="flex gap-1">
+                            {% set rating = product.rating|default(4) %}
+                            {% for i in 1..5 %}
+                                <svg class="w-5 h-5 {% if i <= rating %}text-yellow-400 fill-yellow-400{% else %}text-slate-500{% endif %}" viewBox="0 0 20 20">
+                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"></path>
+                                </svg>
+                            {% endfor %}
+                        </div>
+                        <span class="text-sm text-gray-400">({{ product.rating|default(0) }} yıldız)</span>
+                    </div>
+
+                    <div class="mt-4 text-2xl font-bold text-white">{{ product.price|number_format(2, ',', '.') }} ₺</div>
+                    {% if product.originalPrice|default(false) and product.originalPrice > product.price %}
+                        <div class="text-lg text-gray-400 line-through">{{ product.originalPrice|number_format(2, ',', '.') }} ₺</div>
+                    {% endif %}
+
+                    <div class="mt-6 text-gray-300 leading-relaxed">{{ product.description|raw }}</div>
                 </div>
             </div>
 
             <aside class="md:col-span-1">
-                <div class="bg-white rounded-lg p-6 shadow">
-                    <div class="text-sm text-gray-500">Stok</div>
-                    <div class="font-semibold">{{ product.stock }}</div>
+                <div class="bg-slate-800 rounded-lg p-6 shadow-lg border border-slate-700">
+                    <div class="text-sm text-gray-400">Stok</div>
+                    <div class="font-semibold text-white">{{ product.stock }}</div>
 
-                    <div class="mt-4">
-                        <button type="button" data-product-id="{{ product.id }}" class="add-to-cart-btn w-full bg-primary-600 text-white px-4 py-3 rounded-lg font-bold">Sepete Ekle</button>
+                    <!-- Favori ve Sepet Butonları -->
+                    <div class="mt-6 space-y-3">
+                        <div class="flex gap-2">
+                            {% if app.user %}
+                            <button class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 favorite-btn" data-product-id="{{ product.id }}">
+                                ❤️ Favori
+                            </button>
+                            {% else %}
+                            <button class="flex-1 bg-gray-600 text-white font-semibold py-3 px-4 rounded-lg cursor-not-allowed" disabled title="Favori eklemek için giriş yapın">
+                                ❤️ Favori
+                            </button>
+                            {% endif %}
+                            <button type="button" data-product-id="{{ product.id }}" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 add-to-cart-btn">
+                                🛒 Sepet
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="mt-6 text-sm text-gray-500">Sepetimde</div>
-                    <div class="font-medium"><span class="cart-count">{{ cartCount|default(0) }}</span> ürün</div>
+                    <div class="mt-6 text-sm text-gray-400">Sepetimde</div>
+                    <div class="font-medium text-white"><span class="cart-count">{{ cartCount|default(0) }}</span> ürün</div>
                 </div>
             </aside>
         </div>
     </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            bindFavoriteButtons();
+            loadFavoriteState();
+        });
+
+        function bindFavoriteButtons() {
+            document.querySelectorAll('.favorite-btn').forEach(button => {
+                button.addEventListener('click', async function() {
+                    const productId = this.getAttribute('data-product-id');
+                    await toggleFavorite(productId, this);
+                });
+            });
+        }
+
+        async function toggleFavorite(productId, button) {
+            // Kullanıcı giriş kontrolü
+            {% if not app.user %}
+            alert('Favori eklemek için lütfen giriş yapın!');
+            return;
+            {% endif %}
+
+            try {
+                const response = await fetch(`/favorite/toggle/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    credentials: 'same-origin'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    if (data.isFavorite) {
+                        button.classList.remove('bg-red-600', 'hover:bg-red-700');
+                        button.classList.add('bg-red-800', 'hover:bg-red-900');
+                        button.innerHTML = '💖 Favoride';
+                        showFlashMessage('Ürün favorilerinize eklendi!', 'success');
+                    } else {
+                        button.classList.remove('bg-red-800', 'hover:bg-red-900');
+                        button.classList.add('bg-red-600', 'hover:bg-red-700');
+                        button.innerHTML = '❤️ Favori';
+                        showFlashMessage('Ürün favorilerinizden çıkarıldı!', 'info');
+                    }
+                } else {
+                    showFlashMessage('Bir hata oluştu', 'error');
+                }
+            } catch (error) {
+                console.error('Favori işlemi hatası:', error);
+                showFlashMessage('Bir hata oluştu', 'error');
+            }
+        }
+
+        async function loadFavoriteState() {
+            {% if app.user %}
+            const button = document.querySelector('.favorite-btn');
+            if (button) {
+                const productId = button.getAttribute('data-product-id');
+                try {
+                    const response = await fetch(`/favorite/check/${productId}`, {
+                        credentials: 'same-origin'
+                    });
+                    const data = await response.json();
+
+                    if (data.isFavorite) {
+                        button.classList.remove('bg-red-600', 'hover:bg-red-700');
+                        button.classList.add('bg-red-800', 'hover:bg-red-900');
+                        button.innerHTML = '💖 Favoride';
+                    }
+                } catch (error) {
+                    console.error('Favori durumu kontrol hatası:', error);
+                }
+            }
+            {% endif %}
+        }
+
+        function showFlashMessage(message, type) {
+            // Basit flash message gösterimi
+            const flashDiv = document.createElement('div');
+            flashDiv.className = `fixed top-4 right-4 px-6 py-3 rounded-lg text-white z-50 shadow-lg ${
+                type === 'success' ? 'bg-green-600' :
+                type === 'error' ? 'bg-red-600' : 'bg-blue-600'
+            }`;
+            flashDiv.innerHTML = `
+                <div class="flex items-center">
+                    <span class="mr-2">${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(flashDiv);
+
+            setTimeout(() => {
+                flashDiv.remove();
+            }, 5000);
+        }
+    </script>
+
+    {{ include('partials/_footer.html.twig') }}
+</div>
 {% endblock %}

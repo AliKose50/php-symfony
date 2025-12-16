@@ -3,6 +3,7 @@
 {% block title %}{{ category ? category.name : 'Ürünler' }}{% endblock %}
 
 {% block body %}
+<div class="mt-5 min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
   <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lumina E-Ticaret</title>
@@ -20,61 +21,16 @@
   
   </head>
     {# Navbar'ı buraya çağırıyoruz #}
-    {{ include('partials/_navbar.html.twig', { navbar_light: true }) }}
+    {{ include('partials/_navbar.html.twig', ) }}
 
     {# Sepet partial'ı #}
     {{ include('partials/_cart.html.twig') }}
+    <br>
 
-<!-- Kategori Başlığı -->
-    <section class="category-header">
-        <h1>moda Giyim</h1>
-        <p>Sezonun en trend parçalarını keşfedin.</p>
-    </section>
-
-    <!-- Kategori Başlığı -->
-    <section class="px-6 py-6 bg-gray-100">
-        <div class="max-w-7xl mx-auto">
-            <h1 class="text-2xl font-semibold">{{ category ? category.name : 'Tüm Ürünler' }}</h1>
-            {% if category and category.parent %}
-                <p class="text-sm text-gray-600">Alt kategori: {{ category.parent.name }}</p>
-            {% endif %}
-        </div>
-    </section>
-{# 
-    <!-- Ürünler -->
-    <div class="max-w-7xl mx-auto px-6 py-8">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {% for product in products %}
-                {% set mainImage = product.productImages|first %}
-                {% if not mainImage %}
-                    {% set mainImage = product.productImages|first %}
-                {% endif %}
-                <div class="bg-white rounded-lg shadow overflow-hidden">
-                    <div class="h-56 bg-gray-50 flex items-center justify-center">
-                        {% if mainImage %}
-                            <img src="{{ asset('uploads/product_images/' ~ mainImage.imageUrl) }}" alt="{{ product.name }}" class="w-full h-full object-cover">
-                        {% else %}
-                            <div class="text-gray-400">Resim yok</div>
-                        {% endif %}
-                    </div>
-                    <div class="p-4">
-                        <h3 class="text-lg font-medium">{{ product.name }}</h3>
-                        <p class="mt-2 text-gray-600">{{ product.description|raw }}</p>
-                        <div class="mt-3 flex items-center justify-between">
-                            <span class="text-xl font-semibold">{{ product.price }}₺</span>
-                            <a href="#" class="inline-block bg-indigo-600 text-white px-3 py-1 rounded">İncele</a>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                <div class="col-span-4 text-center text-gray-600">Bu kategoride ürün bulunamadı.</div>
-            {% endfor %}
-        </div>
-    </div> #}
-    {# Reusable product grid partial #}
     {{ include('partials/_product_grid.html.twig', { products: products }) }}
 
 
     {{ include('partials/_footer.html.twig') }}
 
+</div>
 {% endblock %}

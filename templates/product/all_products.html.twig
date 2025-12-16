@@ -3,6 +3,7 @@
 {% block title %}Tüm Ürünler - {{ parent() }}{% endblock %}
 
 {% block body %}
+<div class="mt-5 min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -16,22 +17,22 @@
   
   </head>
     {# Navbar'ı buraya çağırıyoruz #}
-    {{ include('partials/_navbar.html.twig', { navbar_light: true }) }}
+    {{ include('partials/_navbar.html.twig') }}
 <div class="container mx-auto px-4 py-8">
     <div class="mb-8">
-        <h1 class="text-4xl font-bold text-gray-900 mb-2">Tüm Ürünler</h1>
-        <p class="text-gray-600">{{ products|length }} ürün bulundu</p>
+        <h1 class="text-4xl font-bold text-white mb-2">Tüm Ürünler</h1>
+        <p class="text-gray-300">{{ products|length }} ürün bulundu</p>
     </div>
 
     <!-- Filtre ve Sıralama Seçenekleri -->
     <div class="mb-8 flex gap-4">
-        <select id="filterSelect" class="px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 cursor-pointer">
+        <select id="filterSelect" class="px-4 py-2 border border-slate-600 rounded-lg bg-slate-800 text-white cursor-pointer">
             <option value="">Filtreyi Sıfırla</option>
             <option value="price-low-high">Fiyat: Düşükten Yükseğe</option>
             <option value="price-high-low">Fiyat: Yüksekten Düşüğe</option>
         </select>
 
-        <select id="sortSelect" class="px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 cursor-pointer">
+        <select id="sortSelect" class="px-4 py-2 border border-slate-600 rounded-lg bg-slate-800 text-white cursor-pointer">
             <option value="newest">En Yeni</option>
             <option value="popular">Popüler</option>
             <option value="best-rated">En İyi Değerlendirilen</option>
@@ -42,8 +43,8 @@
     {% if products|length > 0 %}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {% for product in products %}
-                <div class="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden">
-                    <div class="relative h-64 bg-gray-200 overflow-hidden">
+                <div class="bg-slate-800 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-slate-700">
+                    <div class="relative h-64 bg-slate-700 overflow-hidden">
                         {% set mainImage = product.productImages|first %}
                         {% if mainImage %}
                             <a href="{{ path('app_product_show', {'id': product.id}) }}" class="block w-full h-full">
@@ -54,25 +55,25 @@
                                 {% endif %}
                             </a>
                         {% else %}
-                            <div class="w-full h-full flex items-center justify-center bg-gray-300">
-                                <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="w-full h-full flex items-center justify-center bg-slate-600">
+                                <svg class="w-16 h-16 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
                             </div>
                         {% endif %}
                     </div>
                     <div class="p-4">
-                        <h3 class="text-lg font-semibold text-gray-900 truncate">
-                            <a href="{{ path('app_product_show', {'id': product.id}) }}" class="inline-block hover:text-primary-600">{{ product.name }}</a>
+                        <h3 class="text-lg font-semibold text-white truncate">
+                            <a href="{{ path('app_product_show', {'id': product.id}) }}" class="inline-block hover:text-blue-400">{{ product.name }}</a>
                         </h3>
-                        <p class="text-gray-600 text-sm mb-3">{{ product.description[:50] }}...</p>
+                        <p class="text-gray-300 text-sm mb-3">{{ product.description[:50] }}...</p>
 
                         <!-- Yıldız Değerlendirmesi -->
                         <div class="flex items-center gap-2 mb-3">
                             <div class="flex gap-1">
                                 {% set rating = product.rating|default(4) %}
                                 {% for i in 1..5 %}
-                                    <svg class="w-4 h-4 {% if i <= rating %}text-yellow-400 fill-yellow-400{% else %}text-gray-300{% endif %}" viewBox="0 0 20 20">
+                                    <svg class="w-4 h-4 {% if i <= rating %}text-yellow-400 fill-yellow-400{% else %}text-slate-500{% endif %}" viewBox="0 0 20 20">
                                         <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"></path>
                                     </svg>
                                 {% endfor %}
@@ -82,16 +83,27 @@
 
                         <!-- Fiyat -->
                         <div class="mb-4">
-                            <span class="text-2xl font-bold text-gray-900">{{ product.price|number_format(2, ',', '.') }} ₺</span>
+                            <span class="text-2xl font-bold text-white">{{ product.price|number_format(2, ',', '.') }} ₺</span>
                             {% if product.originalPrice|default(false) and product.originalPrice > product.price %}
                                 <span class="text-lg text-gray-400 line-through ml-2">{{ product.originalPrice|number_format(2, ',', '.') }} ₺</span>
                             {% endif %}
                         </div>
 
-                        <!-- Sepete Ekle Butonu -->
-                        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 add-to-cart-btn" data-product-id="{{ product.id }}">
-                            🛒 Sepete Ekle
-                        </button>
+                        <!-- Favori ve Sepet Butonları -->
+                        <div class="flex gap-2 mb-4">
+                            {% if app.user %}
+                            <button class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 favorite-btn" data-product-id="{{ product.id }}">
+                                ❤️ Favori
+                            </button>
+                            {% else %}
+                            <button class="flex-1 bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg cursor-not-allowed" disabled title="Favori eklemek için giriş yapın">
+                                ❤️ Favori
+                            </button>
+                            {% endif %}
+                            <button class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 add-to-cart-btn" data-product-id="{{ product.id }}">
+                                🛒 Sepet
+                            </button>
+                        </div>
 
                         <!-- Ürün Detayı Linki -->
                         <a href="{{ path('app_product_show', {id: product.id}) }}" class="mt-2 block text-center text-blue-600 hover:text-blue-800 text-sm font-medium underline">
@@ -109,17 +121,117 @@
 </div>
 
 <script>
-    // Sepete ekle butonlarını bağla
-    bindAddToCartButtons();
+    // Sayfa yüklendiğinde favori durumlarını kontrol et
+    document.addEventListener('DOMContentLoaded', function() {
+        bindAddToCartButtons();
+        bindFavoriteButtons();
+        loadFavoriteStates();
 
-    // Filtre ve sıralama işlevleri (demo)
-    document.getElementById('filterSelect')?.addEventListener('change', function() {
-        console.log('Filtre seçildi:', this.value);
+        // Filtre ve sıralama işlevleri (demo)
+        document.getElementById('filterSelect')?.addEventListener('change', function() {
+            console.log('Filtre seçildi:', this.value);
+        });
+
+        document.getElementById('sortSelect')?.addEventListener('change', function() {
+            console.log('Sıralama seçildi:', this.value);
+        });
     });
 
-    document.getElementById('sortSelect')?.addEventListener('change', function() {
-        console.log('Sıralama seçildi:', this.value);
+    function bindFavoriteButtons() {
+        document.querySelectorAll('.favorite-btn').forEach(button => {
+            button.addEventListener('click', async function() {
+                const productId = this.getAttribute('data-product-id');
+                await toggleFavorite(productId, this);
+            });
+        });
+    }
+
+    async function toggleFavorite(productId, button) {
+        // Kullanıcı giriş kontrolü
+        {% if not app.user %}
+        alert('Favori eklemek için lütfen giriş yapın!');
+        return;
+        {% endif %}
+
+        try {
+            const response = await fetch(`/favorite/toggle/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                credentials: 'same-origin'
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                if (data.isFavorite) {
+                    button.classList.remove('bg-red-600', 'hover:bg-red-700');
+                    button.classList.add('bg-red-800', 'hover:bg-red-900');
+                    button.innerHTML = '💖 Favoride';
+                    showFlashMessage('Ürün favorilerinize eklendi!', 'success');
+                } else {
+                    button.classList.remove('bg-red-800', 'hover:bg-red-900');
+                    button.classList.add('bg-red-600', 'hover:bg-red-700');
+                    button.innerHTML = '❤️ Favori';
+                    showFlashMessage('Ürün favorilerinizden çıkarıldı!', 'info');
+                }
+            } else {
+                showFlashMessage('Bir hata oluştu', 'error');
+            }
+        } catch (error) {
+            console.error('Favori işlemi hatası:', error);
+            showFlashMessage('Bir hata oluştu', 'error');
+        }
+    }
+
+    async function loadFavoriteStates() {
+        {% if app.user %}
+        document.querySelectorAll('.favorite-btn').forEach(async button => {
+            const productId = button.getAttribute('data-product-id');
+            try {
+                const response = await fetch(`/favorite/check/${productId}`, {
+                    credentials: 'same-origin'
+                });
+                const data = await response.json();
+
+                if (data.isFavorite) {
+                    button.classList.remove('bg-red-600', 'hover:bg-red-700');
+                    button.classList.add('bg-red-800', 'hover:bg-red-900');
+                    button.innerHTML = '💖 Favoride';
+                }
+            } catch (error) {
+                console.error('Favori durumu kontrol hatası:', error);
+            }
+        });
+        {% endif %}
+    }
+
+    function showFlashMessage(message, type) {
+        // Basit flash message gösterimi
+        const flashDiv = document.createElement('div');
+        flashDiv.className = `fixed top-4 right-4 px-6 py-3 rounded-lg text-white z-50 shadow-lg ${
+            type === 'success' ? 'bg-green-600' :
+            type === 'error' ? 'bg-red-600' : 'bg-blue-600'
+        }`;
+        flashDiv.innerHTML = `
+            <div class="flex items-center">
+                <span class="mr-2">${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
+                <span>${message}</span>
+            </div>
+        `;
+        document.body.appendChild(flashDiv);
+
+        setTimeout(() => {
+            flashDiv.remove();
+        }, 5000);
+    }
+
+    // Sayfa yüklendiğinde favori butonlarını bağla
+    document.addEventListener('DOMContentLoaded', function() {
+        bindFavoriteButtons();
     });
 </script>
     {{ include('partials/_footer.html.twig') }}
+</div>
 {% endblock %}

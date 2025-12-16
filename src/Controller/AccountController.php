@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Repository\CartRepository;
+use App\Repository\FavoriteRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\UserRepository;
 use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,15 +20,16 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class AccountController extends AbstractController
 {
     #[Route('', name: 'profile')]
-    public function profile(CartRepository $cartRepository): Response
+    public function profile(CartRepository $cartRepository, FavoriteRepository $favoriteRepository): Response
     {
         $user = $this->getUser();
 
         // Kullanıcının sepetini yükle ve cartCount'ı hesapla (total quantity)
+        // JOIN ile tüm verileri bir seferde çek (performans iyileştirmesi)
         $cart = null;
         $cartCount = 0;
         if ($user) {
-            $cart = $cartRepository->findOneBy(['full_name' => $user]);
+            $cart = $cartRepository->findCartWithItems($user);
             if ($cart) {
                 foreach ($cart->getCartItems() as $item) {
                     $cartCount += (int) $item->getQuantity();
@@ -34,10 +37,17 @@ final class AccountController extends AbstractController
             }
         }
 
+        // Kullanıcının favorilerini yükle
+        $favorites = [];
+        if ($user) {
+            $favorites = $favoriteRepository->findBy(['user' => $user], ['createdAt' => 'DESC']);
+        }
+
         return $this->render('account/profile.html.twig', [
             'user' => $user,
             'cart' => $cart,
             'cartCount' => $cartCount,
+            'favorites' => $favorites,
         ]);
     }
 
@@ -100,5 +110,27 @@ final class AccountController extends AbstractController
             'cart' => $cart,
             'cartCount' => $cartCount,
         ]);
+    }
+
+    #[Route('/favorite/remove/{favoriteId}', name: 'app_favorite_remove', methods: ['POST'])]
+    public function removeFavorite(
+        int $favoriteId,
+        FavoriteRepository $favoriteRepository,
+        EntityManagerInterface $em
+    ): JsonResponse {
+        $user = $this->getUser();
+        if (!$user) {
+            return new JsonResponse(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $favorite = $favoriteRepository->find($favoriteId);
+        if (!$favorite || $favorite->getUser() !== $user) {
+            return new JsonResponse(['error' => 'Favorite not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $em->remove($favorite);
+        $em->flush();
+
+        return new JsonResponse(['success' => true, 'message' => 'Ürün favorilerden kaldırıldı']);
     }
 }

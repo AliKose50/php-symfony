@@ -3,15 +3,16 @@
 {% block title %}Hesaplarım - Lumina{% endblock %}
 
 {% block body %}
-    {# Navbar (light variant for white/gray background) #}
-    {{ include('partials/_navbar.html.twig', { navbar_light: true }) }}
+<div class="mt-5 min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    {# Navbar #}
+    {{ include('partials/_navbar.html.twig') }}
 
-    <main class="min-h-screen bg-white pt-24">
+    <main class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
         <div class="max-w-4xl mx-auto px-6 py-12">
             {# Header #}
             <div class="mb-12">
-                <h1 class="text-4xl font-bold text-gray-900 mb-2">Hesaplarım</h1>
-                <p class="text-gray-600">Hoşgeldiniz, <span class="font-semibold">{{ user.fullName }}</span></p>
+                <h1 class="text-4xl font-bold text-white mb-2">Hesaplarım</h1>
+                <p class="text-gray-300">Hoşgeldiniz, <span class="font-semibold text-white">{{ user.fullName }}</span></p>
             </div>
 
             {# Profile Section #}
@@ -20,15 +21,16 @@
                 <div class="md:col-span-1">
                     <div class="bg-white rounded-lg shadow p-6">
                         <nav class="space-y-2">
-                            <a href="{{ path('app_account_profile') }}" class="block px-4 py-2 bg-blue-600 text-white rounded-lg font-medium">
+                            <a href="{{ path('app_account_profile') }}" class="block px-4 py-2 {% if not app.request.get('section') or app.request.get('section') != 'cart' %}bg-blue-600 text-white{% else %}text-gray-700 hover:bg-gray-100{% endif %} rounded-lg font-medium">
                                 <i data-lucide="user" class="inline w-4 h-4 mr-2"></i>
                                 Hesap Bilgileri
                             </a>
-                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium">
-                                <i data-lucide="package" class="inline w-4 h-4 mr-2"></i>
-                                Siparişlerim
+                            <a href="{{ path('app_account_profile') }}?section=cart" class="block px-4 py-2 {% if app.request.get('section') == 'cart' %}bg-blue-600 text-white{% else %}text-gray-700 hover:bg-gray-100{% endif %} rounded-lg font-medium">
+                                <i data-lucide="shopping-cart" class="inline w-4 h-4 mr-2"></i>
+                                Sepetim
                             </a>
-                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium">
+                         
+                            <a href="{{ path('app_account_profile') }}?section=favorites" class="block px-4 py-2 {% if app.request.get('section') == 'favorites' %}bg-blue-600 text-white{% else %}text-gray-700 hover:bg-gray-100{% endif %} rounded-lg font-medium">
                                 <i data-lucide="heart" class="inline w-4 h-4 mr-2"></i>
                                 Favorilerim
                             </a>
@@ -46,82 +48,284 @@
 
                 {# Main Content #}
                 <div class="md:col-span-2 space-y-6">
-                    {# Account Information Card #}
-                    <div class="bg-white rounded-lg shadow p-8">
-                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                            <i data-lucide="user-circle" class="w-6 h-6 mr-3 text-blue-600"></i>
-                            Kişisel Bilgiler
-                        </h2>
-                        {# Flash messages #}
-                        {% for label, messages in app.flashes %}
-                            {% for message in messages %}
-                                <div class="mb-4 px-4 py-3 rounded text-sm {{ label == 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700' }}">{{ message }}</div>
+                    {% if app.request.get('section') == 'cart' %}
+                        {# Cart Section #}
+                        <div id="cart-section" class="bg-white rounded-lg shadow p-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                                <i data-lucide="shopping-cart" class="w-6 h-6 mr-3 text-blue-600"></i>
+                                Sepetim
+                            </h2>
+                            <div id="cart-content">
+                                <div class="text-center py-8">
+                                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                                    <p class="text-gray-600">Sepet yükleniyor...</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% elseif app.request.get('section') == 'favorites' %}
+                        {# Favorites Section #}
+                        <div class="bg-white rounded-lg shadow p-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                                <i data-lucide="heart" class="w-6 h-6 mr-3 text-red-600"></i>
+                                Favorilerim
+                            </h2>
+                            {% if favorites|length > 0 %}
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {% for favorite in favorites %}
+                                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow">
+                                            <div class="aspect-square bg-gray-200 rounded-lg mb-3 overflow-hidden">
+                                                {% set mainImage = favorite.product.productImages|first %}
+                                                {% if mainImage %}
+                                                    <img src="{{ asset('uploads/product_images/' ~ mainImage.imageUrl) }}" alt="{{ favorite.product.name }}" class="w-full h-full object-cover">
+                                                {% else %}
+                                                    <div class="w-full h-full flex items-center justify-center text-gray-400">
+                                                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                        </svg>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            <h3 class="font-semibold text-gray-900 mb-2">{{ favorite.product.name }}</h3>
+                                            <p class="text-gray-600 text-sm mb-3">{{ favorite.product.price|number_format(2, ',', '.') }} ₺</p>
+                                            <div class="flex gap-2">
+                                                <a href="{{ path('app_product_show', {'id': favorite.product.id}) }}" class="flex-1 bg-blue-600 text-white text-center py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                                                    İncele
+                                                </a>
+                                                <button onclick="removeFavorite({{ favorite.id }})" class="bg-red-600 text-white py-2 px-3 rounded-lg hover:bg-red-700 transition-colors">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center py-12">
+                                    <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                    </svg>
+                                    <h3 class="text-lg font-medium text-gray-900 mb-2">Henüz favori ürününüz yok</h3>
+                                    <p class="text-gray-600 mb-6">Beğendiğiniz ürünleri favorilerinize ekleyebilirsiniz.</p>
+                                    <a href="{{ path('app_all_products') }}" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                                        Ürünleri Keşfet
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        {# Account Information Card #}
+                        <div class="bg-white rounded-lg shadow p-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                                <i data-lucide="user-circle" class="w-6 h-6 mr-3 text-blue-600"></i>
+                                Kişisel Bilgiler
+                            </h2>
+                            {# Flash messages #}
+                            {% for label, messages in app.flashes %}
+                                {% for message in messages %}
+                                    <div class="mb-4 px-4 py-3 rounded text-sm {{ label == 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700' }}">{{ message }}</div>
+                                {% endfor %}
                             {% endfor %}
-                        {% endfor %}
 
-                        <form method="post" action="{{ path('app_account_update') }}" class="space-y-4">
-                            <input type="hidden" name="_token" value="{{ csrf_token('account_update') }}">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label for="fullName" class="block text-sm font-medium text-gray-700 mb-2">Ad Soyad</label>
-                                    <input id="fullName" name="fullName" type="text" value="{{ user.fullName }}" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900" required />
+                            <form method="post" action="{{ path('app_account_update') }}" class="space-y-4">
+                                <input type="hidden" name="_token" value="{{ csrf_token('account_update') }}">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="fullName" class="block text-sm font-medium text-gray-700 mb-2">Ad Soyad</label>
+                                        <input id="fullName" name="fullName" type="text" value="{{ user.fullName }}" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900" required />
+                                    </div>
+                                    <div>
+                                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Adres</label>
+                                        <input id="email" name="email" type="email" value="{{ user.email }}" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900" required />
+                                    </div>
                                 </div>
+
                                 <div>
-                                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Adres</label>
-                                    <input id="email" name="email" type="email" value="{{ user.email }}" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900" required />
+                                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Yeni Parola (isteğe bağlı)</label>
+                                    <input id="password" name="password" type="password" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900" placeholder="Yeni parola girin (boş bırakılırsa değişmez)" />
                                 </div>
+
+                                <div class="pt-4">
+                                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors flex items-center">
+                                        <i data-lucide="save" class="w-4 h-4 mr-2"></i>
+                                        Bilgileri Güncelle
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        {# Account Stats #}
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-white rounded-lg shadow p-6 text-center">
+                                <div class="text-3xl font-bold text-blue-600 mb-2">0</div>
+                                <p class="text-gray-600 text-sm">Toplam Sipariş</p>
                             </div>
-
-                            <div>
-                                <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Yeni Parola (isteğe bağlı)</label>
-                                <input id="password" name="password" type="password" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900" placeholder="Yeni parola girin (boş bırakılırsa değişmez)" />
+                            <div class="bg-white rounded-lg shadow p-6 text-center">
+                                <div class="text-3xl font-bold text-green-600 mb-2">0₺</div>
+                                <p class="text-gray-600 text-sm">Harcanan Tutar</p>
                             </div>
-
-                            <div class="pt-4">
-                                <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors flex items-center">
-                                    <i data-lucide="save" class="w-4 h-4 mr-2"></i>
-                                    Bilgileri Güncelle
-                                </button>
+                            <div class="bg-white rounded-lg shadow p-6 text-center">
+                                <div class="text-3xl font-bold text-purple-600 mb-2">0</div>
+                                <p class="text-gray-600 text-sm">Favori Ürün</p>
                             </div>
-                        </form>
-                    </div>
+                        </div>
 
-                    {# Account Stats #}
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="bg-white rounded-lg shadow p-6 text-center">
-                            <div class="text-3xl font-bold text-blue-600 mb-2">0</div>
-                            <p class="text-gray-600 text-sm">Toplam Sipariş</p>
+                        {# Quick Actions #}
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">Hızlı İşlemler</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <a href="{{ path('app_product') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-center transition-colors">
+                                    Alışverişe Devam Et
+                                </a>
+                                <a href="{{ path('app_account_profile') }}?section=cart" class="px-4 py-2 bg-white text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 font-medium text-center transition-colors">
+                                    Sepetime Git ({{ cartCount }})
+                                </a>
+                            </div>
                         </div>
-                        <div class="bg-white rounded-lg shadow p-6 text-center">
-                            <div class="text-3xl font-bold text-green-600 mb-2">0₺</div>
-                            <p class="text-gray-600 text-sm">Harcanan Tutar</p>
-                        </div>
-                        <div class="bg-white rounded-lg shadow p-6 text-center">
-                            <div class="text-3xl font-bold text-purple-600 mb-2">0</div>
-                            <p class="text-gray-600 text-sm">Favori Ürün</p>
-                        </div>
-                    </div>
-
-                    {# Quick Actions #}
-                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                        <h3 class="text-lg font-bold text-gray-900 mb-4">Hızlı İşlemler</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <a href="{{ path('app_product') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-center transition-colors">
-                                Alışverişe Devam Et
-                            </a>
-                            <a href="{{ path('app_cart_view') }}" class="px-4 py-2 bg-white text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 font-medium text-center transition-colors">
-                                Sepetime Git ({{ cartCount }})
-                            </a>
-                        </div>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </main>
 
     <script>
-        function editProfile() {
-            alert('Profil düzenleme özelliği yakında eklenecek!');
+        document.addEventListener('DOMContentLoaded', function() {
+            // Only load cart if cart section exists
+            const cartSection = document.getElementById('cart-section');
+            if (cartSection) {
+                loadCart();
+            }
+        });
+
+        async function loadCart() {
+            try {
+                const response = await fetch('/cart/api/view', {
+                    credentials: 'same-origin'
+                });
+                const data = await response.json();
+
+                if (data.items && data.items.length > 0) {
+                    renderCart(data);
+                } else {
+                    document.getElementById('cart-content').innerHTML = `
+                        <div class="text-center py-8">
+                            <p class="text-gray-600">Sepetinizde ürün bulunmuyor.</p>
+                            <a href="{{ path('app_product') }}" class="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Alışverişe Başla</a>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Sepet yüklenirken hata:', error);
+                document.getElementById('cart-content').innerHTML = `
+                    <div class="text-center py-8">
+                        <p class="text-red-600">Sepet yüklenirken hata oluştu.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderCart(data) {
+            const cartSection = document.getElementById('cart-section');
+            if (!cartSection) return;
+
+            let html = '<div class="space-y-4">';
+
+            data.items.forEach(item => {
+                html += `
+                    <div class="flex items-center gap-4 p-4 border rounded-lg">
+                        <div class="w-16 h-16 flex-shrink-0 rounded bg-gray-100">
+                            ${item.product.image ? `<img src="${item.product.image}" class="w-full h-full object-cover" />` : '<div class="w-full h-full flex items-center justify-center text-gray-400 text-xs">Resim yok</div>'}
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold">${item.product.name}</h3>
+                            <p class="text-sm text-gray-500">${item.product.category}</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <button onclick="updateCartItem(${item.id}, -1)" class="px-2 py-1 border rounded text-sm">-</button>
+                                <span class="px-2">${item.quantity}</span>
+                                <button onclick="updateCartItem(${item.id}, 1)" class="px-2 py-1 border rounded text-sm">+</button>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm text-gray-500">Birim: ${item.product.price.toFixed(2).replace('.', ',')} ₺</div>
+                            <div class="font-semibold">Toplam: ${item.lineTotal.toFixed(2).replace('.', ',')} ₺</div>
+                            <button onclick="removeCartItem(${item.id})" class="text-red-500 text-sm mt-1">Kaldır</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                <div class="border-t pt-4 mt-6">
+                    <div class="flex justify-between text-lg font-bold">
+                        <span>Toplam:</span>
+                        <span>${data.cartTotal.toFixed(2).replace('.', ',')} ₺</span>
+                    </div>
+                    <div class="mt-4">
+                        <a href="{{ path('app_checkout') }}" class="block text-center bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700">Ödemeye Geç</a>
+                    </div>
+                </div>
+            `;
+
+            html += '</div>';
+            document.getElementById('cart-content').innerHTML = html;
+        }
+
+        async function updateCartItem(itemId, delta) {
+            try {
+                const response = await fetch(`/cart/update/${itemId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `delta=${delta}`,
+                    credentials: 'same-origin'
+                });
+                const data = await response.json();
+                if (data.success) {
+                    loadCart(); // Reload cart
+                }
+            } catch (error) {
+                console.error('Sepet güncellenirken hata:', error);
+            }
+        }
+
+        async function removeCartItem(itemId) {
+            try {
+                const response = await fetch(`/cart/remove/${itemId}`, {
+                    method: 'POST',
+                    credentials: 'same-origin'
+                });
+                const data = await response.json();
+                if (data.success) {
+                    loadCart(); // Reload cart
+                }
+            } catch (error) {
+                console.error('Ürün kaldırılırken hata:', error);
+            }
+        }
+
+        async function removeFavorite(favoriteId) {
+            if (!confirm('Bu ürünü favorilerden kaldırmak istediğinizden emin misiniz?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/account/favorite/remove/${favoriteId}`, {
+                    method: 'POST',
+                    credentials: 'same-origin'
+                });
+                const data = await response.json();
+                if (data.success) {
+                    // Sayfayı yeniden yükle
+                    window.location.reload();
+                } else {
+                    alert('Bir hata oluştu');
+                }
+            } catch (error) {
+                console.error('Favori kaldırılırken hata:', error);
+                alert('Bir hata oluştu');
+            }
         }
     </script>
+</div>
 {% endblock %}

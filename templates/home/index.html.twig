@@ -1,61 +1,24 @@
-{# index.html.twig #}
 {% extends 'base.html.twig' %}
 
+{% block title %}Lumina E-Ticaret{% endblock %}
+
+{% block stylesheets %}
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
 {% block body %}
-      <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lumina E-Ticaret</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    {# <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-            },
-            colors: {
-              primary: {
-                50: '#eff6ff',
-                100: '#dbeafe',
-                500: '#3b82f6',
-                600: '#2563eb',
-                700: '#1d4ed8',
-                900: '#1e3a8a',
-              }
-            }
-          }
-        }
-      }
-    </script> #}
-  
-  </head>
-    {# Navbar'ı buraya çağırıyoruz #}
+<div class="mt-5 min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <!-- Navbar -->
     {{ include('partials/_navbar.html.twig') }}
 
-  
+    <!-- Hero Section -->
     {{ include('partials/_hero.html.twig') }}
-   {# Sepet partial'ı #}
-    {{ include('partials/_cart.html.twig') }}
-    {# İçerikler #}
-    
-    {{ include('partials/_cart.html.twig') }}
-  
-    {{ include('partials/_content.html.twig') }}
- 
-   
- 
 
-    {# Footer'ı buraya çağırıyoruz #}
+    <!-- Content -->
+    {{ include('partials/_content.html.twig') }}
+
+    <!-- Footer -->
     {{ include('partials/_footer.html.twig') }}
-    
-    {# app.js loaded via importmap in base.html.twig as a module #}
+</div>
 {% endblock %}

@@ -14,7 +14,7 @@ function initPage() {
 }
 
 // Çeşitli navigation yöntemleri için init çağrısı
-document.addEventListener('DOMContentLoaded', initPage);
+
 document.addEventListener('turbo:load', initPage);
 document.addEventListener('turbolinks:load', initPage);
 window.initPage = initPage;
@@ -67,7 +67,7 @@ function initializeInteractiveFeatures() {
         }
     }
 
-    // 2. Navbar Scroll Efekti
+    // 2. Navbar fonksiyonlarını başlat
     initNavbar();
 
     // 3. Slider Başlat
@@ -79,74 +79,6 @@ function initializeInteractiveFeatures() {
     console.log("Tüm parçalar yüklendi ve özellikler aktif edildi.");
 }
 
-
-// --- Logic Functions ---
-
-// Navbar Scroll Logic
-function initNavbar() {
-    const navbar = document.getElementById('navbar');
-    const navLogo = document.getElementById('nav-logo');
-    const navLinks = document.querySelectorAll('.nav-link');
-    const navIconBtns = document.querySelectorAll('.nav-icon-btn');
-    const navMobileBtn = document.querySelector('.nav-mobile-btn');
-
-    if (!navbar) return;
-
-    // Check if navbar is already styled (navbar_light: true means fixed styling, don't change on scroll)
-    const isStyledNavbar = navbar.classList.contains('bg-white') || navbar.classList.contains('text-gray-900');
-    if (isStyledNavbar) return; // Skip scroll effect for pre-styled navbars
-
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 20) {
-            navbar.classList.remove('bg-transparent', 'py-6');
-            navbar.classList.add('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-4');
-
-            if (navLogo) {
-                navLogo.classList.remove('text-white');
-                navLogo.classList.add('text-gray-900');
-            }
-
-            navLinks.forEach(link => {
-                link.classList.remove('text-white');
-                link.classList.add('text-gray-700');
-            });
-
-            navIconBtns.forEach(btn => {
-                btn.classList.remove('text-white', 'hover:bg-white/20');
-                btn.classList.add('text-gray-700', 'hover:bg-gray-100');
-            });
-
-            if (navMobileBtn) {
-                navMobileBtn.classList.remove('text-white');
-                navMobileBtn.classList.add('text-gray-700');
-            }
-
-        } else {
-            navbar.classList.add('bg-transparent', 'py-6');
-            navbar.classList.remove('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-4');
-
-            if (navLogo) {
-                navLogo.classList.add('text-white');
-                navLogo.classList.remove('text-gray-900');
-            }
-
-            navLinks.forEach(link => {
-                link.classList.add('text-white');
-                link.classList.remove('text-gray-700');
-            });
-
-            navIconBtns.forEach(btn => {
-                btn.classList.add('text-white', 'hover:bg-white/20');
-                btn.classList.remove('text-gray-700', 'hover:bg-gray-100');
-            });
-
-            if (navMobileBtn) {
-                navMobileBtn.classList.add('text-white');
-                navMobileBtn.classList.remove('text-gray-700');
-            }
-        }
-    });
-}
 
 // Slider Logic
 let currentSlide = 0;
@@ -487,3 +419,49 @@ function bindAddToCartButtons() {
         btn.dataset.addToCartBound = '1';
     });
 }
+
+// Navbar Functions
+function initNavbar() {
+    // Navbar fonksiyonları için event listener'ları başlat
+    // Bu fonksiyonlar global olarak tanımlandı, burada sadece başlatma işlemi
+    console.log("Navbar initialized");
+}
+
+function toggleUserMenu() {
+    const menu = document.getElementById('user-dropdown-menu');
+    if (menu) {
+        menu.classList.toggle('hidden');
+    }
+}
+
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    if (menu) {
+        menu.classList.toggle('hidden');
+    }
+}
+
+function toggleLoginModal() {
+    // Login modal açma fonksiyonu - eğer modal varsa
+    const modal = document.getElementById('login-modal');
+    if (modal) {
+        modal.classList.toggle('hidden');
+    } else {
+        // Modal yoksa login sayfasına yönlendir
+        window.location.href = '/login';
+    }
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function (event) {
+    const userMenu = document.getElementById('user-dropdown-menu');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    if (userMenu && !event.target.closest('.relative')) {
+        userMenu.classList.add('hidden');
+    }
+
+    if (mobileMenu && !event.target.closest('#mobile-menu') && !event.target.closest('button[onclick="toggleMobileMenu()"]')) {
+        mobileMenu.classList.add('hidden');
+    }
+});

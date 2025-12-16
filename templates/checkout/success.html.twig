@@ -3,12 +3,12 @@
 {% block title %}Ödeme Başarılı{% endblock %}
 
 {% block body %}
-<div class="min-h-screen bg-gray-50">
-    {% include 'partials/_navbar.html.twig' with { navbar_light: true } %}
+<div class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 mt-5">
+    {% include 'partials/_navbar.html.twig' %}
 
-    <main class="pt-24 container mx-auto px-4 py-8">
+    <main class="container mx-auto px-4 py-8">
         <div class="max-w-2xl mx-auto">
-            <div class="bg-white rounded-lg shadow p-8 text-center">
+            <div class="bg-slate-800 rounded-lg shadow p-8 text-center">
                 <!-- Başarı İkonu -->
                 <div class="mb-6">
                     <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full">
@@ -16,8 +16,8 @@
                     </div>
                 </div>
 
-                <h1 class="text-3xl font-bold text-gray-900 mb-2">Ödeme Başarılı!</h1>
-                <p class="text-gray-600 mb-8">Siparişiniz başarıyla alınmıştır. Kargo takibini e-posta adresinizde alacaksınız.</p>
+                <h1 class="text-3xl font-bold text-white mb-2">Ödeme Başarılı!</h1>
+                <p class="text-gray-300 mb-8">Siparişiniz başarıyla alınmıştır. Kargo takibini e-posta adresinizde alacaksınız.</p>
 
                 <!-- Sipariş Detayları -->
                 <div class="bg-gray-50 rounded-lg p-6 mb-8 text-left">

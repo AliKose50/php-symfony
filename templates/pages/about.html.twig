@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hakkımızda - Lumina{% endblock %}
+
+{% block body %}
+<div class="mt-5 min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <!-- Navbar -->
+    {{ include('partials/_navbar.html.twig') }}
+
+    <main class="container mx-auto px-4 py-12">
+        <div class="max-w-4xl mx-auto">
+            <!-- Başlık -->
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Hakkımızda</h1>
+                <p class="text-xl text-gray-300">Lumina'nın hikayesi ve değerleri</p>
+            </div>
+
+            <!-- Ana İçerik -->
+            <div class="bg-slate-800 rounded-2xl p-8 md:p-12 shadow-2xl">
+                <!-- Vizyonumuz -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold text-white mb-6">Vizyonumuz</h2>
+                    <p class="text-gray-300 text-lg leading-relaxed mb-6">
+                        Lumina olarak, modern yaşamın gereksinimlerini en kaliteli ürünler ile buluşturmayı hedefliyoruz.
+                        Teknoloji ve tasarımın buluştuğu noktada, müşterilerimizin hayatını kolaylaştıran çözümler sunmak
+                        için çalışıyoruz.
+                    </p>
+                    <p class="text-gray-300 text-lg leading-relaxed">
+                        Geleceğin alışveriş deneyimini bugün yaşatmak, sürdürülebilir ve yenilikçi yaklaşımlarımızla
+                        sektörümüzde öncü olmak vizyonumuzun temelini oluşturur.
+                    </p>
+                </section>
+
+                <!-- Misyonumuz -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold text-white mb-6">Misyonumuz</h2>
+                    <p class="text-gray-300 text-lg leading-relaxed mb-6">
+                        Müşteri memnuniyetini her şeyin önünde tutarak, güvenilir, kaliteli ve erişilebilir ürünler
+                        sunmak misyonumuzdur. Her müşterimizin ihtiyaçlarını anlayarak, kişiselleştirilmiş alışveriş
+                        deneyimleri yaratmak için çalışıyoruz.
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-8 mt-8">
+                        <div class="bg-slate-700 p-6 rounded-xl">
+                            <h3 class="text-xl font-semibold text-white mb-3">Kalite Odaklı</h3>
+                            <p class="text-gray-300">En yüksek standartlarda ürün ve hizmet kalitesi sağlıyoruz.</p>
+                        </div>
+                        <div class="bg-slate-700 p-6 rounded-xl">
+                            <h3 class="text-xl font-semibold text-white mb-3">Müşteri Memnuniyeti</h3>
+                            <p class="text-gray-300">Her müşterimizin memnuniyeti bizim önceliğimizdir.</p>
+                        </div>
+                        <div class="bg-slate-700 p-6 rounded-xl">
+                            <h3 class="text-xl font-semibold text-white mb-3">Sürdürülebilirlik</h3>
+                            <p class="text-gray-300">Çevre dostu uygulamalarla geleceğe katkı sağlıyoruz.</p>
+                        </div>
+                        <div class="bg-slate-700 p-6 rounded-xl">
+                            <h3 class="text-xl font-semibold text-white mb-3">İnovasyon</h3>
+                            <p class="text-gray-300">Sürekli yeniliklerle sektörümüzde öncü oluyoruz.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Değerlerimiz -->
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold text-white mb-6">Değerlerimiz</h2>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white mb-2">Güvenilirlik</h3>
+                            <p class="text-gray-300">Müşterilerimize verdiğimiz sözleri tutarız.</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white mb-2">Şefkat</h3>
+                            <p class="text-gray-300">Müşterilerimize ve çalışanlarımıza değer veririz.</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white mb-2">Hız</h3>
+                            <p class="text-gray-300">Hızlı ve etkili çözümler sunarız.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- İletişim CTA -->
+                <section class="text-center bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8">
+                    <h2 class="text-2xl font-bold text-white mb-4">Bizimle İletişime Geçin</h2>
+                    <p class="text-blue-100 mb-6">Sorularınız için bize ulaşmaktan çekinmeyin.</p>
+                    <a href="{{ path('app_contact') }}" class="inline-flex items-center px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors">
+                        İletişim
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    {{ include('partials/_footer.html.twig') }}
+</div>
+{% endblock %}

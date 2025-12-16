@@ -8,13 +8,13 @@
           Müşteri memnuniyeti odaklı hizmet anlayışımızla yanınızdayız.
         </p>
         <div class="flex space-x-4">
-          <a href="#" class="p-2 bg-gray-800 rounded-lg hover:bg-primary-600 hover:text-white transition-all">
+          <a href="https://facebook.com/luminaturkey" target="_blank" class="p-2 bg-gray-800 rounded-lg hover:bg-primary-600 hover:text-white transition-all">
             <i data-lucide="facebook" class="w-5 h-5"></i>
           </a>
-          <a href="#" class="p-2 bg-gray-800 rounded-lg hover:bg-primary-600 hover:text-white transition-all">
+          <a href="https://twitter.com/luminaturkey" target="_blank" class="p-2 bg-gray-800 rounded-lg hover:bg-primary-600 hover:text-white transition-all">
             <i data-lucide="twitter" class="w-5 h-5"></i>
           </a>
-          <a href="#" class="p-2 bg-gray-800 rounded-lg hover:bg-primary-600 hover:text-white transition-all">
+          <a href="https://instagram.com/luminaturkey" target="_blank" class="p-2 bg-gray-800 rounded-lg hover:bg-primary-600 hover:text-white transition-all">
             <i data-lucide="instagram" class="w-5 h-5"></i>
           </a>
         </div>
@@ -22,11 +22,11 @@
       <div>
         <h3 class="text-lg font-semibold text-white mb-6">Hızlı Erişim</h3>
         <ul class="space-y-3">
-          <li><a href="#" class="hover:text-primary-500 transition-colors">Hakkımızda</a></li>
-          <li><a href="#" class="hover:text-primary-500 transition-colors">Sıkça Sorulan Sorular</a></li>
-          <li><a href="#" class="hover:text-primary-500 transition-colors">Kargo ve İade</a></li>
-          <li><a href="#" class="hover:text-primary-500 transition-colors">Gizlilik Politikası</a></li>
-          <li><a href="#" class="hover:text-primary-500 transition-colors">İletişim</a></li>
+          <li><a href="{{ path('app_about') }}" class="hover:text-primary-500 transition-colors">Hakkımızda</a></li>
+          <li><a href="{{ path('app_faq') }}" class="hover:text-primary-500 transition-colors">Sıkça Sorulan Sorular</a></li>
+          <li><a href="{{ path('app_shipping') }}" class="hover:text-primary-500 transition-colors">Kargo ve İade</a></li>
+          <li><a href="{{ path('app_privacy') }}" class="hover:text-primary-500 transition-colors">Gizlilik Politikası</a></li>
+          <li><a href="{{ path('app_contact') }}" class="hover:text-primary-500 transition-colors">İletişim</a></li>
         </ul>
       </div>
       <div>
@@ -47,11 +47,11 @@
           </div>
           <div class="flex items-center space-x-3">
             <i data-lucide="phone" class="w-5 h-5 text-primary-500"></i>
-            <span>+90 (212) 555 00 00</span>
+            <a href="tel:+902125550000" class="hover:text-primary-400 transition-colors">+90 (212) 555 00 00</a>
           </div>
           <div class="flex items-center space-x-3">
             <i data-lucide="mail" class="w-5 h-5 text-primary-500"></i>
-            <span>iletisim@lumina.com.tr</span>
+            <a href="mailto:iletisim@lumina.com.tr" class="hover:text-primary-400 transition-colors">iletisim@lumina.com.tr</a>
           </div>
         </div>
       </div>
