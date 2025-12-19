@@ -31,9 +31,11 @@
         </div>
 
           <!-- Ürün Grid'i -->
-    {% if products|length > 0 %}
+    {% if productData|length > 0 %}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {% for product in products %}
+            {% for item in productData %}
+                {% set product = item.product %}
+                {% set isFavorited = item.isFavorited %}
                 <div class="bg-slate-800 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-slate-700">
                     <div class="relative h-64 bg-slate-700 overflow-hidden">
                         {% set mainImage = product.productImages|first %}
@@ -80,20 +82,19 @@
                             {% endif %}
                         </div>
 
-                        <!-- Sepete Ekle Butonu -->
-                        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 add-to-cart-btn" data-product-id="{{ product.id }}">
-                            🛒 Sepete Ekle
-                        </button>
-
-                        <!-- Favori Butonu -->
-                        <div class="flex gap-2 mt-2">
-                            <button class="{% if app.user %}flex-1 bg-red-600 hover:bg-red-700{% else %}flex-1 bg-gray-500 cursor-not-allowed{% endif %} text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 favorite-btn" data-product-id="{{ product.id }}" {% if not app.user %}disabled{% endif %}>
-                                ❤️ Favori
+                        <!-- Favori ve Sepet Butonları -->
+                        <div class="flex gap-2 mb-3">
+                            <button class="flex-1 favorite-btn {% if isFavorited %}bg-red-600 hover:bg-red-700{% else %}bg-gray-600 hover:bg-gray-700{% endif %} text-white font-semibold py-2 px-3 rounded-lg transition-colors duration-200" data-product-id="{{ product.id }}">
+                                <i data-lucide="heart" class="w-4 h-4 inline mr-1"></i>
+                                {{ isFavorited ? 'Favorilerden Çıkar' : 'Favoriye Ekle' }}
+                            </button>
+                            <button class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 rounded-lg transition-colors duration-200 add-to-cart-btn" data-product-id="{{ product.id }}">
+                                🛒 Sepete Ekle
                             </button>
                         </div>
 
                         <!-- Ürün Detayı Linki -->
-                        <a href="{{ path('app_product_show', {id: product.id}) }}" class="mt-2 block text-center text-blue-600 hover:text-blue-800 text-sm font-medium underline">
+                        <a href="{{ path('app_product_show', {id: product.id}) }}" class="block text-center text-blue-600 hover:text-blue-800 text-sm font-medium underline">
                             Detaylı İncelemek
                         </a>
                     </div>
@@ -112,7 +113,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             lucide.replace();
             bindAddToCartButtons();
-            bindFavoriteButtons();
         });
 
         function bindAddToCartButtons() {
@@ -122,54 +122,6 @@
                     addToCart(productId);
                 });
             });
-        }
-
-        function bindFavoriteButtons() {
-            document.querySelectorAll('.favorite-btn').forEach(button => {
-                button.addEventListener('click', async function() {
-                    const productId = this.getAttribute('data-product-id');
-                    await toggleFavorite(productId, this);
-                });
-            });
-        }
-
-        async function toggleFavorite(productId, button) {
-            // Kullanıcı giriş kontrolü
-            {% if not app.user %}
-            alert('Favori eklemek için lütfen giriş yapın!');
-            return;
-            {% endif %}
-
-            try {
-                const response = await fetch(`/favorite/toggle/${productId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    credentials: 'same-origin'
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    if (data.isFavorite) {
-                        button.classList.remove('bg-red-600', 'hover:bg-red-700');
-                        button.classList.add('bg-red-800', 'hover:bg-red-900');
-                        button.innerHTML = '💖 Favoride';
-                        showFlashMessage('Ürün favorilerinize eklendi!', 'success');
-                    } else {
-                        button.classList.remove('bg-red-800', 'hover:bg-red-900');
-                        button.classList.add('bg-red-600', 'hover:bg-red-700');
-                        button.innerHTML = '❤️ Favori';
-                        showFlashMessage('Ürün favorilerinizden çıkarıldı!', 'info');
-                    }
-                } else {
-                    showFlashMessage('Bir hata oluştu', 'error');
-                }
-            } catch (error) {
-                console.error('Favori işlemi hatası:', error);
-                showFlashMessage('Bir hata oluştu', 'error');
-            }
         }
 
         function showFlashMessage(message, type) {

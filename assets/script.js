@@ -21,6 +21,7 @@ window.initPage = initPage;
 
 // Sayfa yenilendikçe buton bindinglerini de yenile (navigation olayları)
 window.addEventListener('load', bindAddToCartButtons);
+window.addEventListener('load', bindFavoriteButtons);
 
 // HTML Parçalarını Yükleme Fonksiyonu
 async function loadComponents() {
@@ -75,6 +76,9 @@ function initializeInteractiveFeatures() {
 
     // 4. Bind add-to-cart buttons
     bindAddToCartButtons();
+
+    // 5. Bind favorite buttons
+    bindFavoriteButtons();
 
     console.log("Tüm parçalar yüklendi ve özellikler aktif edildi.");
 }
@@ -354,6 +358,70 @@ window.addToCart = function (productId) {
         });
 }
 
+// Favori toggle fonksiyonu
+window.toggleFavorite = function (productId) {
+    // CSRF token al
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+    fetch('/favorite/toggle/' + productId, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRF-Token': csrfToken,
+        },
+    })
+        .then(response => {
+            if (response.status === 401 || response.status === 403) {
+                alert('Lütfen giriş yapın');
+                return null;
+            }
+
+            const ct = response.headers.get('content-type') || '';
+            if (!ct.includes('application/json')) {
+                return response.text().then(txt => {
+                    console.error('Beklenmeyen cevap:', txt);
+                    alert('Sunucudan beklenmeyen bir cevap alındı.');
+                    return null;
+                });
+            }
+
+            return response.json();
+        })
+        .then(data => {
+            if (!data) return;
+
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            // Başarılı: mesaj göster ve butonu güncelle
+            if (typeof showTempMessage === 'function') {
+                showTempMessage(data.message || 'Favori güncellendi!');
+            } else {
+                alert(data.message || 'Favori güncellendi!');
+            }
+
+            // Butonu güncelle
+            const btn = document.querySelector(`.favorite-btn[data-product-id="${productId}"]`);
+            if (btn) {
+                if (data.isFavorite) {
+                    btn.textContent = '💖 Zaten Favoride';
+                    btn.className = 'flex-1 bg-gray-600 text-white font-semibold py-3 px-4 rounded-lg cursor-not-allowed';
+                    btn.disabled = true;
+                } else {
+                    btn.textContent = '❤️ Favoriye Ekle';
+                    btn.className = 'flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 favorite-btn';
+                    btn.disabled = false;
+                }
+            }
+        })
+        .catch(error => {
+            console.error('toggleFavorite hata:', error);
+            alert('Favori işlemi sırasında hata oluştu.');
+        });
+}
+
 // Küçük geçici bildirim göster
 function showTempMessage(msg) {
     try {
@@ -417,6 +485,24 @@ function bindAddToCartButtons() {
             }
         });
         btn.dataset.addToCartBound = '1';
+    });
+}
+
+function bindFavoriteButtons() {
+    const buttons = document.querySelectorAll('.favorite-btn');
+    buttons.forEach(btn => {
+        if (btn.dataset.favoriteBound) return;
+
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const pid = btn.getAttribute('data-product-id') || btn.dataset.productId;
+            if (!pid) return;
+            console.log('favorite button clicked for product', pid);
+            if (typeof window.toggleFavorite === 'function') {
+                window.toggleFavorite(parseInt(pid));
+            }
+        });
+        btn.dataset.favoriteBound = '1';
     });
 }
 

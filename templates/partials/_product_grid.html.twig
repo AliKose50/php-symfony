@@ -1,7 +1,15 @@
-{# Partial: Product grid - expects `products` variable #}
+{# Partial: Product grid - expects `products` variable which can be either product objects or productData arrays #}
 <div class="max-w-7xl mx-auto px-6 py-8">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {% for product in products %}
+        {% for item in products %}
+            {# Check if item is a product object or productData array #}
+            {% if item.product is defined %}
+                {% set product = item.product %}
+                {% set isFavorited = item.isFavorited %}
+            {% else %}
+                {% set product = item %}
+                {% set isFavorited = false %}
+            {% endif %}
             {% set mainImage = product.productImages|first %}
             <div class="group bg-slate-800 rounded-2xl shadow hover:shadow-2xl transition-all duration-300 overflow-hidden border border-slate-700 flex flex-col h-full">
                 <div class="relative overflow-hidden bg-slate-700" style="padding-top:100%;">
@@ -32,6 +40,10 @@
                     <p class="text-sm text-gray-300 line-clamp-2 mb-3">{{ product.description|striptags|slice(0,120) ~ (product.description|length > 120 ? '...' : '') }}</p>
 
                     <div class="mt-auto flex items-center justify-between pt-3">
+                        <button type="button" class="favorite-btn flex items-center gap-2 px-3 py-2 {% if isFavorited %}bg-red-600 hover:bg-red-700{% else %}bg-gray-600 hover:bg-gray-700{% endif %} text-white rounded-lg hover:bg-red-700 active:scale-95 transition-all duration-150 shadow-sm" data-product-id="{{ product.id }}">
+                            <i data-lucide="heart" class="w-4 h-4"></i>
+                            <span class="text-sm font-medium">{{ isFavorited ? 'Favorilerden Çıkar' : 'Favoriye Ekle' }}</span>
+                        </button>
                         <button type="button" onclick="addToCart({{ product.id }})" class="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:scale-95 transition-all duration-150 shadow-sm">
                             <i data-lucide="shopping-cart" class="w-4 h-4"></i>
                             <span class="text-sm font-medium">Sepete Ekle</span>

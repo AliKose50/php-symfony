@@ -15,6 +15,9 @@
         <!-- Google Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         
+        <!-- CSRF Token -->
+        <meta name="csrf-token" content="{{ csrf_token('submit') }}">
+        
         {% block stylesheets %}
         {% endblock %}
 
@@ -30,5 +33,12 @@
         
         {# Login Modal #}
         {{ include('partials/_login_modal.html.twig') }}
+
+        {# JavaScript Modules #}
+        <script src="{{ asset('cart.js') }}"></script>
+        <script src="{{ asset('favorite.js') }}"></script>
+        <script src="{{ asset('navbar.js') }}"></script>
+        <script src="{{ asset('slider.js') }}"></script>
+        <script src="{{ asset('main.js') }}"></script>
     </body>
 </html>

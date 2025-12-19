@@ -59,9 +59,15 @@
                     <div class="mt-6 space-y-3">
                         <div class="flex gap-2">
                             {% if app.user %}
-                            <button class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 favorite-btn" data-product-id="{{ product.id }}">
-                                ❤️ Favori
+                            {% if isFavorited %}
+                            <button type="button" class="flex-1 bg-gray-600 text-white font-semibold py-3 px-4 rounded-lg cursor-not-allowed" disabled>
+                                💖 Zaten Favoride
                             </button>
+                            {% else %}
+                            <button type="button" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 favorite-btn" data-product-id="{{ product.id }}">
+                                ❤️ Favoriye Ekle
+                            </button>
+                            {% endif %}
                             {% else %}
                             <button class="flex-1 bg-gray-600 text-white font-semibold py-3 px-4 rounded-lg cursor-not-allowed" disabled title="Favori eklemek için giriş yapın">
                                 ❤️ Favori
@@ -89,6 +95,7 @@
         function bindFavoriteButtons() {
             document.querySelectorAll('.favorite-btn').forEach(button => {
                 button.addEventListener('click', async function() {
+                        console.log('Favori butonu tıklandı, productId:', this.getAttribute('data-product-id'));
                     const productId = this.getAttribute('data-product-id');
                     await toggleFavorite(productId, this);
                 });
@@ -96,41 +103,54 @@
         }
 
         async function toggleFavorite(productId, button) {
+            console.log('toggleFavorite çağrıldı, productId:', productId);
             // Kullanıcı giriş kontrolü
             {% if not app.user %}
-            alert('Favori eklemek için lütfen giriş yapın!');
+            showFlashMessage('Favori eklemek için lütfen giriş yapın!', 'error');
             return;
             {% endif %}
 
+            const originalHTML = button.innerHTML;
+            const originalClasses = button.className;
+
+            // Loading state
+            button.innerHTML = '<div class="flex items-center justify-center"><div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div></div>';
+            button.disabled = true;
+
             try {
+                console.log('Fetch yapılıyor:', `/favorite/toggle/${productId}`);
                 const response = await fetch(`/favorite/toggle/${productId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
                     credentials: 'same-origin'
                 });
-
+                console.log('Response status:', response.status);
                 const data = await response.json();
+                console.log('Response data:', data);
 
                 if (data.success) {
-                    if (data.isFavorite) {
-                        button.classList.remove('bg-red-600', 'hover:bg-red-700');
-                        button.classList.add('bg-red-800', 'hover:bg-red-900');
-                        button.innerHTML = '💖 Favoride';
-                        showFlashMessage('Ürün favorilerinize eklendi!', 'success');
-                    } else {
-                        button.classList.remove('bg-red-800', 'hover:bg-red-900');
-                        button.classList.add('bg-red-600', 'hover:bg-red-700');
-                        button.innerHTML = '❤️ Favori';
-                        showFlashMessage('Ürün favorilerinizden çıkarıldı!', 'info');
-                    }
+                    // Sadece ekleme işlemi - silme yok
+                    button.classList.remove('bg-red-600', 'hover:bg-red-700');
+                    button.classList.add('bg-gray-600');
+                    button.innerHTML = '💖 Zaten Favoride';
+                    button.disabled = true;
+                    button.classList.remove('favorite-btn');
+                    showFlashMessage('Ürün favorilerinize eklendi!', 'success');
                 } else {
-                    showFlashMessage('Bir hata oluştu', 'error');
+                    showFlashMessage(data.message || 'Bir hata oluştu', 'error');
+                    button.innerHTML = originalHTML;
+                    button.className = originalClasses;
+                    button.disabled = false;
                 }
             } catch (error) {
                 console.error('Favori işlemi hatası:', error);
                 showFlashMessage('Bir hata oluştu', 'error');
+                button.innerHTML = originalHTML;
+                button.className = originalClasses;
+                button.disabled = false;
             }
         }
 

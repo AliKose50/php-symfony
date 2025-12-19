@@ -12,7 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Service\CartService;
+use App\Service\UserService;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/account', name: 'app_account_')]
@@ -20,7 +21,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class AccountController extends AbstractController
 {
     #[Route('', name: 'profile')]
-    public function profile(CartRepository $cartRepository, FavoriteRepository $favoriteRepository): Response
+    public function profile(CartRepository $cartRepository, FavoriteRepository $favoriteRepository, CartService $cartService): Response
     {
         $user = $this->getUser();
 
@@ -31,9 +32,7 @@ final class AccountController extends AbstractController
         if ($user) {
             $cart = $cartRepository->findCartWithItems($user);
             if ($cart) {
-                foreach ($cart->getCartItems() as $item) {
-                    $cartCount += (int) $item->getQuantity();
-                }
+                $cartCount = $cartService->getCartTotals($cart)['count'];
             }
         }
 
@@ -52,7 +51,7 @@ final class AccountController extends AbstractController
     }
 
     #[Route('/update', name: 'update', methods: ['POST'])]
-    public function update(Request $request, EntityManagerInterface $em, UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher, CartRepository $cartRepository): Response
+    public function update(Request $request, UserService $userService, CartRepository $cartRepository, CartService $cartService): Response
     {
         $user = $this->getUser();
         if (!$user instanceof User) {
@@ -70,39 +69,18 @@ final class AccountController extends AbstractController
         $email = trim((string) $request->request->get('email', ''));
         $newPassword = trim((string) $request->request->get('password', ''));
 
-        // Basit doğrulamalar
-        if ($fullName === '' || $email === '') {
-            $this->addFlash('error', 'Ad soyad ve e-posta boş bırakılamaz.');
+        if (!$userService->updateUser($user, $fullName, $email, $newPassword)) {
+            $this->addFlash('error', 'Ad soyad ve e-posta boş bırakılamaz veya e-posta zaten kullanılıyor.');
             return $this->redirectToRoute('app_account_profile');
         }
-
-        // Email benzersizliği kontrolü
-        $existing = $userRepository->findOneBy(['email' => $email]);
-        if ($existing && $existing->getId() !== $user->getId()) {
-            $this->addFlash('error', 'Bu e-posta zaten kullanılıyor.');
-            return $this->redirectToRoute('app_account_profile');
-        }
-
-        $user->setFullName($fullName);
-        $user->setEmail($email);
-
-        if ($newPassword !== '') {
-            $hashed = $passwordHasher->hashPassword($user, $newPassword);
-            $user->setPassword($hashed);
-        }
-
-        $em->persist($user);
-        $em->flush();
 
         $this->addFlash('success', 'Hesap bilgileriniz güncellendi.');
 
         // Yeniden yüklemek için sepet bilgisini de gönder ve cartCount'ı hesapla (total quantity)
-        $cart = $cartRepository->findOneBy(['full_name' => $user]);
+        $cart = $cartRepository->findCartWithItems($user);
         $cartCount = 0;
         if ($cart) {
-            foreach ($cart->getCartItems() as $item) {
-                $cartCount += (int) $item->getQuantity();
-            }
+            $cartCount = $cartService->getCartTotals($cart)['count'];
         }
 
         return $this->render('account/profile.html.twig', [

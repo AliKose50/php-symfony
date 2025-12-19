@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Service\CartService;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -24,6 +25,7 @@ final class CartController extends AbstractController
         Request $request,
         ProductRepository $productRepository,
         CartRepository $cartRepository,
+        CartService $cartService,
         EntityManagerInterface $em
     ): JsonResponse {
         $user = $this->getUser();
@@ -68,19 +70,14 @@ final class CartController extends AbstractController
 
         $em->flush();
 
-        // Recalculate totals: cartCount = total quantity of all items
-        $cartCount = 0;
-        $cartTotal = 0.0;
-        foreach ($cart->getCartItems() as $ci) {
-            $cartCount += (int) $ci->getQuantity();
-            $cartTotal += (float) $ci->getProduct()->getPrice() * (int) $ci->getQuantity();
-        }
+        // Get cart totals using service
+        $totals = $cartService->getCartTotals($cart);
 
         return new JsonResponse([
             'success' => true,
             'message' => 'Ürün sepete eklendi',
-            'cartCount' => $cartCount,
-            'cartTotal' => $cartTotal,
+            'cartCount' => $totals['count'],
+            'cartTotal' => $totals['total'],
         ]);
     }
 
@@ -95,6 +92,7 @@ final class CartController extends AbstractController
     public function updateCartItem(
         int $itemId,
         Request $request,
+        CartService $cartService,
         EntityManagerInterface $em,
         \App\Repository\CartItemRepository $itemRepository
     ): JsonResponse {
@@ -119,14 +117,9 @@ final class CartController extends AbstractController
 
         $em->flush();
 
-        // Recalculate cart totals: cartCount = total quantity of all items
+        // Get cart totals using service
         $cart = $cartItem->getCart();
-        $cartCount = 0;
-        $cartTotal = 0.0;
-        foreach ($cart->getCartItems() as $ci) {
-            $cartCount += (int) $ci->getQuantity();
-            $cartTotal += (float) $ci->getProduct()->getPrice() * (int) $ci->getQuantity();
-        }
+        $totals = $cartService->getCartTotals($cart);
 
         $lineTotal = 0.0;
         if ($newQuantity > 0) {
@@ -136,8 +129,8 @@ final class CartController extends AbstractController
         return new JsonResponse([
             'success' => true,
             'quantity' => max(0, $newQuantity),
-            'cartCount' => $cartCount,
-            'cartTotal' => $cartTotal,
+            'cartCount' => $totals['count'],
+            'cartTotal' => $totals['total'],
             'lineTotal' => $lineTotal,
         ]);
     }
@@ -145,6 +138,7 @@ final class CartController extends AbstractController
     #[Route('/remove/{itemId}', name: 'remove', methods: ['POST'])]
     public function removeCartItem(
         int $itemId,
+        CartService $cartService,
         EntityManagerInterface $em,
         \App\Repository\CartItemRepository $itemRepository
     ): JsonResponse {
@@ -162,25 +156,18 @@ final class CartController extends AbstractController
         $em->remove($cartItem);
         $em->flush();
 
-        // Recalculate cart totals: cartCount = total quantity of all items
-        $cartCount = 0;
-        $cartTotal = 0.0;
-        if ($cart) {
-            foreach ($cart->getCartItems() as $ci) {
-                $cartCount += (int) $ci->getQuantity();
-                $cartTotal += (float) $ci->getProduct()->getPrice() * (int) $ci->getQuantity();
-            }
-        }
+        // Get cart totals using service
+        $totals = $cartService->getCartTotals($cart);
 
         return new JsonResponse([
             'success' => true,
-            'cartCount' => $cartCount,
-            'cartTotal' => $cartTotal,
+            'cartCount' => $totals['count'],
+            'cartTotal' => $totals['total'],
         ]);
     }
 
     #[Route('/api/view', name: 'api_view', methods: ['GET'])]
-    public function apiView(CartRepository $cartRepository): JsonResponse
+    public function apiView(CartRepository $cartRepository, CartService $cartService): JsonResponse
     {
         $user = $this->getUser();
         if (!$user) {
@@ -190,38 +177,14 @@ final class CartController extends AbstractController
         // JOIN ile tüm verileri bir seferde çek (N+1 query problemi çözümü)
         $cart = $cartRepository->findCartWithItems($user);
 
-        $cartCount = 0;
-        $total = 0.0;
-        $items = [];
-        if ($cart) {
-            foreach ($cart->getCartItems() as $item) {
-                $cartCount += (int) $item->getQuantity();
-                $price = (float) $item->getProduct()->getPrice();
-                $qty = (int) $item->getQuantity();
-                $total += $price * $qty;
-
-                $img = $item->getProduct()->getProductImages()->first();
-                $imageUrl = $img ? '/uploads/product_images/' . $img->getImageUrl() : null;
-
-                $items[] = [
-                    'id' => $item->getId(),
-                    'product' => [
-                        'id' => $item->getProduct()->getId(),
-                        'name' => $item->getProduct()->getName(),
-                        'price' => $price,
-                        'category' => $item->getProduct()->getCategory()->getName(),
-                        'image' => $imageUrl,
-                    ],
-                    'quantity' => $qty,
-                    'lineTotal' => $price * $qty,
-                ];
-            }
+        if (!$cart) {
+            return new JsonResponse([
+                'cartCount' => 0,
+                'cartTotal' => 0.0,
+                'items' => [],
+            ]);
         }
 
-        return new JsonResponse([
-            'cartCount' => $cartCount,
-            'cartTotal' => $total,
-            'items' => $items,
-        ]);
+        return new JsonResponse($cartService->getCartDataForApi($cart));
     }
 }
