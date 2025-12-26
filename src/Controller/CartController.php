@@ -82,10 +82,19 @@ final class CartController extends AbstractController
     }
 
     #[Route('/view', name: 'view')]
-    public function view(): Response
+    public function view(CartRepository $cartRepository, CartService $cartService): Response
     {
-        // JavaScript ile veri çekildiği için sadece template render ediliyor
-        return $this->render('cart/index.html.twig');
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $cart = $cartRepository->findOneBy(['full_name' => $user]);
+        $cartData = $cartService->getCartDataForView($cart);
+
+        return $this->render('cart/index.html.twig', [
+            'cart' => $cartData
+        ]);
     }
 
     #[Route('/update/{itemId}', name: 'update', methods: ['POST'])]
@@ -106,8 +115,8 @@ final class CartController extends AbstractController
             return new JsonResponse(['error' => 'Not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $delta = (int) $request->request->get('delta', 0);
-        $newQuantity = $cartItem->getQuantity() + $delta;
+        $change = (int) $request->request->get('quantity_change', 0);
+        $newQuantity = $cartItem->getQuantity() + $change;
 
         if ($newQuantity <= 0) {
             $em->remove($cartItem);

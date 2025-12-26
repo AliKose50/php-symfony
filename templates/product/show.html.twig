@@ -94,10 +94,9 @@
 
         function bindFavoriteButtons() {
             document.querySelectorAll('.favorite-btn').forEach(button => {
-                button.addEventListener('click', async function() {
-                        console.log('Favori butonu tıklandı, productId:', this.getAttribute('data-product-id'));
+                button.addEventListener('click', function() {
                     const productId = this.getAttribute('data-product-id');
-                    await toggleFavorite(productId, this);
+                    toggleFavorite(productId, this);
                 });
             });
         }
@@ -123,8 +122,10 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
+                    body: new URLSearchParams({
+                        '_token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }),
                     credentials: 'same-origin'
                 });
                 console.log('Response status:', response.status);

@@ -1,0 +1,40 @@
+ {# Sepet Modal/Sidebar Widget #}
+<div id="cart-sidebar" class="fixed right-0 top-0 h-full w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-50">
+    <div class="flex flex-col h-full">
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+            <h2 class="text-xl font-bold text-gray-900 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                </svg>
+                Sepetim
+            </h2>
+            <button id="close-cart-sidebar" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Cart Items -->
+        <div id="cart-sidebar-items" class="flex-1 overflow-y-auto p-4 space-y-4">
+            <!-- Items will be loaded here -->
+        </div>
+
+        <!-- Footer -->
+        <div class="border-t border-gray-200 p-6">
+            <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <span class="text-lg font-semibold text-gray-900">Toplam</span>
+                    <span id="cart-sidebar-total" class="text-xl font-bold text-purple-600">0,00 ₺</span>
+                </div>
+                <a href="{{ path('app_cart_view') }}" class="block w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white text-center py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-200">
+                    Sepete Git
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cart Sidebar Overlay -->
+<div id="cart-overlay" class="fixed inset-0 bg-black bg-opacity-50 opacity-0 pointer-events-none transition-opacity duration-300 z-40"></div>

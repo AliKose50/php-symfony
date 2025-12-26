@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Repository\CartRepository;
 use App\Repository\FavoriteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Service\CartService;
+use App\Repository\CartRepository;
 use App\Service\UserService;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -21,20 +21,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class AccountController extends AbstractController
 {
     #[Route('', name: 'profile')]
-    public function profile(CartRepository $cartRepository, FavoriteRepository $favoriteRepository, CartService $cartService): Response
+    public function profile(FavoriteRepository $favoriteRepository): Response
     {
         $user = $this->getUser();
-
-        // Kullanıcının sepetini yükle ve cartCount'ı hesapla (total quantity)
-        // JOIN ile tüm verileri bir seferde çek (performans iyileştirmesi)
-        $cart = null;
-        $cartCount = 0;
-        if ($user) {
-            $cart = $cartRepository->findCartWithItems($user);
-            if ($cart) {
-                $cartCount = $cartService->getCartTotals($cart)['count'];
-            }
-        }
 
         // Kullanıcının favorilerini yükle
         $favorites = [];
@@ -44,15 +33,15 @@ final class AccountController extends AbstractController
 
         return $this->render('account/profile.html.twig', [
             'user' => $user,
-            'cart' => $cart,
-            'cartCount' => $cartCount,
             'favorites' => $favorites,
         ]);
     }
 
     #[Route('/update', name: 'update', methods: ['POST'])]
-    public function update(Request $request, UserService $userService, CartRepository $cartRepository, CartService $cartService): Response
-    {
+    public function update(
+        Request $request,
+        UserService $userService
+    ): Response {
         $user = $this->getUser();
         if (!$user instanceof User) {
             return $this->redirectToRoute('app_login');
@@ -76,18 +65,7 @@ final class AccountController extends AbstractController
 
         $this->addFlash('success', 'Hesap bilgileriniz güncellendi.');
 
-        // Yeniden yüklemek için sepet bilgisini de gönder ve cartCount'ı hesapla (total quantity)
-        $cart = $cartRepository->findCartWithItems($user);
-        $cartCount = 0;
-        if ($cart) {
-            $cartCount = $cartService->getCartTotals($cart)['count'];
-        }
-
-        return $this->render('account/profile.html.twig', [
-            'user' => $user,
-            'cart' => $cart,
-            'cartCount' => $cartCount,
-        ]);
+        return $this->redirectToRoute('app_account_profile');
     }
 
     #[Route('/favorite/remove/{favoriteId}', name: 'app_favorite_remove', methods: ['POST'])]

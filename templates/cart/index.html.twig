@@ -3,34 +3,26 @@
 {% block title %}Sepetim{% endblock %}
 
 {% block body %}
-<div class="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+<div class="mt-5 min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
     {# Navbar #}
     {{ include('partials/_navbar.html.twig') }}
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {# Header #}
         <div class="mb-8">
-            <a href="{{ path('app_product') }}" class="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors mb-4">
+            <a href="{{ path('app_product') }}" class="inline-flex items-center text-gray-300 hover:text-white transition-colors mb-4">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
                 Alışverişe Devam Et
             </a>
-            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">Alışveriş Sepetim</h1>
-            <p class="text-gray-600 mt-2">Siparişinizi gözden geçirin ve tamamlayın</p>
+            <h1 class="text-3xl sm:text-4xl font-bold text-white">Alışveriş Sepetim</h1>
+            <p class="text-gray-300 mt-2">Siparişinizi gözden geçirin ve tamamlayın</p>
         </div>
 
-        <!-- Loading State -->
-        <div id="loading-state" class="flex flex-col justify-center items-center py-20">
-            <div class="relative">
-                <div class="animate-spin rounded-full h-16 w-16 border-4 border-purple-200"></div>
-                <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-purple-600 absolute top-0 left-0"></div>
-            </div>
-            <span class="mt-4 text-gray-700 font-medium">Sepetiniz yükleniyor...</span>
-        </div>
-
-        <!-- Empty Cart State -->
-        <div id="empty-cart" class="hidden">
+        <!-- Cart Content -->
+        {% if cart.items is empty %}
+            <!-- Empty Cart State -->
             <div class="max-w-md mx-auto text-center py-16">
                 <div class="bg-white rounded-2xl shadow-xl p-12">
                     <div class="w-24 h-24 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -48,7 +40,77 @@
                     </a>
                 </div>
             </div>
-        </div>
+        {% else %}
+            <!-- Cart Items -->
+            <div id="cart-content" class="bg-slate-800 rounded-2xl shadow-xl overflow-hidden border border-slate-700">
+                <div class="divide-y divide-slate-600">
+                    {% for item in cart.items %}
+                    <div id="cart-item-{{ item.id }}" class="cart-item p-6 hover:bg-slate-700 transition-colors">
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <!-- Product Image -->
+                            <div class="w-full sm:w-32 h-48 sm:h-32 flex-shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-purple-50 to-pink-50">
+                                {% if item.product.image %}
+                                    <img src="{{ item.product.image }}" alt="{{ item.product.name }}" class="w-full h-full object-cover">
+                                {% else %}
+                                    <div class="w-full h-full flex items-center justify-center">
+                                        <svg class="w-12 h-12 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Product Details -->
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-lg font-semibold text-white mb-1">{{ item.product.name }}</h3>
+                                <p class="text-sm text-slate-300 mb-2">{{ item.product.category }}</p>
+                                <p class="text-sm text-slate-400">{{ item.quantity }} adet × {{ item.product.price|number_format(2, ',', '.') }} ₺</p>
+                            </div>
+
+                            <!-- Quantity Controls & Price -->
+                            <div class="flex flex-col sm:flex-row items-end sm:items-center gap-4">
+                                <div class="flex items-center border border-slate-600 rounded-lg">
+                                    <button onclick="updateCartItem({{ item.id }}, -1)" class="p-2 hover:bg-slate-600 rounded-l-lg transition-colors">
+                                        <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                                        </svg>
+                                    </button>
+                                    <span class="px-4 py-2 text-center min-w-12 text-white">{{ item.quantity }}</span>
+                                    <button onclick="updateCartItem({{ item.id }}, 1)" class="p-2 hover:bg-slate-600 rounded-r-lg transition-colors">
+                                        <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-white">{{ item.lineTotal|number_format(2, ',', '.') }} ₺</p>
+                                    <button onclick="removeCartItem({{ item.id }})" class="text-sm text-red-400 hover:text-red-300 transition-colors">
+                                        Kaldır
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Cart Summary -->
+                <div class="bg-slate-700 p-6 border-t border-slate-600">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-lg font-semibold text-white">Toplam</span>
+                        <span class="text-2xl font-bold text-purple-400">{{ cart.cartTotal|number_format(2, ',', '.') }} ₺</span>
+                    </div>
+                    <div class="flex gap-4">
+                        <a href="{{ path('app_product') }}" class="flex-1 bg-slate-600 text-slate-200 text-center py-3 rounded-lg font-semibold hover:bg-slate-500 transition-colors">
+                            Alışverişe Devam Et
+                        </a>
+                        <a href="{{ path('app_checkout') }}" class="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-center py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-200">
+                            Siparişi Tamamla
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
 
         <!-- Cart Content Grid -->
         <div id="cart-content" class="hidden grid lg:grid-cols-3 gap-8">
@@ -150,207 +212,88 @@
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    loadCart();
-});
+// Simple cart update functions
+function updateCartItem(itemId, change) {
+    const formData = new FormData();
+    formData.append('quantity_change', change);
+    formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
 
-async function loadCart() {
-    try {
-        const response = await fetch('/cart/api/view', {
-            credentials: 'same-origin'
-        });
-
-        if (!response.ok) {
-            throw new Error('Sepet yüklenirken hata oluştu');
-        }
-
-        const data = await response.json();
-
-        // Hide loading
-        document.getElementById('loading-state').classList.add('hidden');
-
-        if (data.items && data.items.length > 0) {
-            // Show cart content
-            document.getElementById('cart-content').classList.remove('hidden');
-            renderCartItems(data.items);
-            updateCartSummary(data.cartTotal);
+    fetch(`/cart/update/${itemId}`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update quantity display
+            const quantitySpan = document.querySelector(`#cart-item-${itemId} .font-medium.px-3`);
+            if (quantitySpan) {
+                quantitySpan.textContent = data.quantity;
+            }
+            
+            // Update line total
+            const lineTotalSpan = document.querySelector(`#cart-item-${itemId} .text-lg.font-bold.text-white`);
+            if (lineTotalSpan && data.lineTotal !== undefined) {
+                lineTotalSpan.textContent = formatPrice(data.lineTotal);
+            }
+            
+            // Update cart total
+            const cartTotalSpan = document.querySelector('.text-2xl.font-bold.text-purple-400');
+            if (cartTotalSpan && data.cartTotal !== undefined) {
+                cartTotalSpan.textContent = formatPrice(data.cartTotal);
+            }
+            
+            // If quantity is 0, remove the item
+            if (data.quantity <= 0) {
+                const cartItem = document.getElementById(`cart-item-${itemId}`);
+                if (cartItem) {
+                    cartItem.remove();
+                }
+            }
         } else {
-            // Show empty cart
-            document.getElementById('empty-cart').classList.remove('hidden');
+            alert(data.message || 'Bir hata oluştu');
         }
-
-    } catch (error) {
-        console.error('Sepet yükleme hatası:', error);
-        document.getElementById('loading-state').innerHTML = `
-            <div class="text-center py-12">
-                <div class="bg-red-50 border border-red-200 rounded-xl p-6 max-w-md mx-auto">
-                    <svg class="w-12 h-12 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <p class="text-red-700 font-semibold mb-4">Sepet yüklenirken hata oluştu.</p>
-                    <button onclick="loadCart()" class="bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors">
-                        Tekrar Dene
-                    </button>
-                </div>
-            </div>
-        `;
-    }
-}
-
-function renderCartItems(items) {
-    const container = document.getElementById('cart-items');
-    container.innerHTML = '';
-
-    items.forEach((item, index) => {
-        const itemHtml = `
-            <div id="cart-item-${item.id}" class="cart-item-enter bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
-                <div class="flex flex-col sm:flex-row gap-4 p-4 sm:p-6">
-                    <!-- Product Image -->
-                    <div class="w-full sm:w-32 h-48 sm:h-32 flex-shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-purple-50 to-pink-50 relative">
-                        ${item.product.image ?
-                            `<img src="${item.product.image}" 
-                                  alt="${item.product.name}" 
-                                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" 
-                                  loading="lazy" />` :
-                            `<div class="w-full h-full flex items-center justify-center">
-                                <svg class="w-16 h-16 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                             </div>`
-                        }
-                        <div class="absolute top-2 right-2 bg-purple-600 text-white text-xs font-bold px-2 py-1 rounded-full">
-                            #${index + 1}
-                        </div>
-                    </div>
-                    
-                    <!-- Product Info -->
-                    <div class="flex-1 min-w-0">
-                        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
-                            <div class="flex-1 mb-2 sm:mb-0">
-                                <h3 class="font-bold text-lg text-gray-900 mb-1 group-hover:text-purple-600 transition-colors">
-                                    ${item.product.name}
-                                </h3>
-                                <div class="flex items-center text-sm text-gray-500">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                                    </svg>
-                                    ${item.product.category}
-                                </div>
-                            </div>
-                            
-                            <!-- Remove Button -->
-                            <button onclick="removeCartItem(${item.id})" 
-                                    class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-600 transition-all duration-200 group/btn"
-                                    title="Sepetten Kaldır">
-                                <svg class="w-5 h-5 group-hover/btn:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                </svg>
-                            </button>
-                        </div>
-                        
-                        <!-- Quantity and Price -->
-                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <!-- Quantity Controls -->
-                            <div class="flex items-center gap-2">
-                                <span class="text-sm text-gray-600 mr-2">Adet:</span>
-                                <div class="flex items-center bg-gray-50 rounded-lg border border-gray-200">
-                                    <button onclick="updateCartItem(${item.id}, -1)" 
-                                            class="px-4 py-2 hover:bg-gray-100 text-gray-600 hover:text-purple-600 font-bold transition-colors rounded-l-lg">
-                                        −
-                                    </button>
-                                    <span class="px-6 py-2 font-bold text-gray-900 min-w-[3rem] text-center border-x border-gray-200">
-                                        ${item.quantity}
-                                    </span>
-                                    <button onclick="updateCartItem(${item.id}, 1)" 
-                                            class="px-4 py-2 hover:bg-gray-100 text-gray-600 hover:text-purple-600 font-bold transition-colors rounded-r-lg">
-                                        +
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <!-- Price Info -->
-                            <div class="flex items-center gap-4 sm:gap-6">
-                                <div class="text-left sm:text-right">
-                                    <div class="text-xs text-gray-500 mb-1">Birim Fiyat</div>
-                                    <div class="font-semibold text-gray-700">${formatPrice(item.product.price)}</div>
-                                </div>
-                                <div class="text-left sm:text-right">
-                                    <div class="text-xs text-gray-500 mb-1">Toplam</div>
-                                    <div id="item-total-${item.id}" class="font-bold text-xl bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                                        ${formatPrice(item.lineTotal)}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        container.insertAdjacentHTML('beforeend', itemHtml);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Bir hata oluştu');
     });
 }
 
-function updateCartSummary(total) {
-    const formattedTotal = formatPrice(total);
-    document.getElementById('cart-subtotal').textContent = formattedTotal;
-    document.getElementById('cart-total').textContent = formattedTotal;
-}
-
-async function updateCartItem(itemId, change) {
-    try {
-        const response = await fetch(`/cart/update/${itemId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `quantity=${change}`,
-            credentials: 'same-origin'
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            loadCart();
-            showFlashMessage('Sepet güncellendi!', 'success');
-        } else {
-            showFlashMessage(data.message || 'Güncelleme başarısız', 'error');
-        }
-    } catch (error) {
-        console.error('Sepet güncelleme hatası:', error);
-        showFlashMessage('Bir hata oluştu', 'error');
-    }
-}
-
-async function removeCartItem(itemId) {
+function removeCartItem(itemId) {
     if (!confirm('Bu ürünü sepetten kaldırmak istediğinizden emin misiniz?')) {
         return;
     }
 
-    try {
-        const itemElement = document.getElementById(`cart-item-${itemId}`);
-        if (itemElement) {
-            itemElement.classList.add('cart-item-exit');
-        }
+    const formData = new FormData();
+    formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
 
-        const response = await fetch(`/cart/remove/${itemId}`, {
-            method: 'POST',
-            credentials: 'same-origin'
-        });
-
-        const data = await response.json();
-
+    fetch(`/cart/remove/${itemId}`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
         if (data.success) {
-            setTimeout(() => {
-                loadCart();
-                showFlashMessage('Ürün sepetten kaldırıldı!', 'success');
-            }, 300);
+            // Remove item from DOM
+            const cartItem = document.getElementById(`cart-item-${itemId}`);
+            if (cartItem) {
+                cartItem.remove();
+            }
+            
+            // Update cart total
+            const cartTotalSpan = document.querySelector('.text-2xl.font-bold.text-purple-400');
+            if (cartTotalSpan && data.cartTotal !== undefined) {
+                cartTotalSpan.textContent = formatPrice(data.cartTotal);
+            }
         } else {
-            showFlashMessage(data.message || 'Kaldırma başarısız', 'error');
+            alert(data.message || 'Bir hata oluştu');
         }
-    } catch (error) {
-        console.error('Ürün kaldırma hatası:', error);
-        showFlashMessage('Bir hata oluştu', 'error');
-    }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Bir hata oluştu');
+    });
 }
 
 function formatPrice(price) {
@@ -359,70 +302,5 @@ function formatPrice(price) {
         maximumFractionDigits: 2
     }).format(price) + ' ₺';
 }
-
-function showFlashMessage(message, type) {
-    const existing = document.querySelectorAll('.flash-message');
-    existing.forEach(el => el.remove());
-
-    const icons = {
-        success: `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                  </svg>`,
-        error: `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-               </svg>`,
-        info: `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-              </svg>`
-    };
-
-    const colors = {
-        success: 'bg-green-500',
-        error: 'bg-red-500',
-        info: 'bg-blue-500'
-    };
-
-    const flashDiv = document.createElement('div');
-    flashDiv.className = `flash-message fixed top-6 right-6 ${colors[type]} text-white px-6 py-4 rounded-xl shadow-2xl z-50 transform transition-all duration-300 flex items-center gap-3 max-w-md`;
-    flashDiv.style.animation = 'slideInRight 0.3s ease-out';
-    flashDiv.innerHTML = `
-        ${icons[type]}
-        <span class="font-medium">${message}</span>
-    `;
-    
-    document.body.appendChild(flashDiv);
-
-    setTimeout(() => {
-        flashDiv.style.animation = 'slideOutRight 0.3s ease-in';
-        setTimeout(() => flashDiv.remove(), 300);
-    }, 3000);
-}
-
-// Add animations
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideInRight {
-        from {
-            opacity: 0;
-            transform: translateX(100%);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-    
-    @keyframes slideOutRight {
-        from {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        to {
-            opacity: 0;
-            transform: translateX(100%);
-        }
-    }
-`;
-document.head.appendChild(style);
 </script>
 {% endblock %}

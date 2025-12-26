@@ -133,3 +133,6 @@ function showTempMessage(msg) {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { bindAddToCartButtons, showTempMessage };
 }
+
+// Initialize cart button bindings
+bindAddToCartButtons();

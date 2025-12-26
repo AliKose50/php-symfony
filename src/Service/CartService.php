@@ -28,7 +28,12 @@ class CartService
             $price = (float) $item->getProduct()->getPrice();
             $qty = (int) $item->getQuantity();
             $img = $item->getProduct()->getProductImages()->first();
-            $imageUrl = $img ? '/uploads/product_images/' . $img->getImageUrl() : null;
+            $imageUrl = null;
+            if ($img) {
+                $url = $img->getImageUrl();
+                // Eğer URL tam URL ise (https:// ile başlıyorsa) direkt kullan, yoksa prefix ekle
+                $imageUrl = str_starts_with($url, 'http') ? $url : '/uploads/product_images/' . $url;
+            }
 
             $items[] = [
                 'id' => $item->getId(),
@@ -43,10 +48,55 @@ class CartService
                 'lineTotal' => $price * $qty,
             ];
         }
+
         return [
             'cartCount' => $totals['count'],
             'cartTotal' => $totals['total'],
             'items' => $items,
+        ];
+    }
+
+    public function getCartDataForView(?Cart $cart): array
+    {
+        if (!$cart) {
+            return [
+                'items' => [],
+                'cartTotal' => 0.0,
+                'cartCount' => 0,
+            ];
+        }
+
+        $totals = $this->getCartTotals($cart);
+        $items = [];
+        foreach ($cart->getCartItems() as $item) {
+            $price = (float) $item->getProduct()->getPrice();
+            $qty = (int) $item->getQuantity();
+            $img = $item->getProduct()->getProductImages()->first();
+            $imageUrl = null;
+            if ($img) {
+                $url = $img->getImageUrl();
+                // Eğer URL tam URL ise (https:// ile başlıyorsa) direkt kullan, yoksa prefix ekle
+                $imageUrl = str_starts_with($url, 'http') ? $url : '/uploads/product_images/' . $url;
+            }
+
+            $items[] = [
+                'id' => $item->getId(),
+                'product' => [
+                    'id' => $item->getProduct()->getId(),
+                    'name' => $item->getProduct()->getName(),
+                    'price' => $price,
+                    'category' => $item->getProduct()->getCategory()->getName(),
+                    'image' => $imageUrl,
+                ],
+                'quantity' => $qty,
+                'lineTotal' => $price * $qty,
+            ];
+        }
+
+        return [
+            'items' => $items,
+            'cartTotal' => $totals['total'],
+            'cartCount' => $totals['count'],
         ];
     }
 

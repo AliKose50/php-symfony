@@ -1,0 +1,125 @@
+<script>
+// Sepet sidebar fonksiyonlarını global olarak tanımla
+(function() {
+    let cartSidebar, cartOverlay, closeBtn;
+
+    // Global fonksiyonu hemen tanımla
+    window.openCartSidebar = function() {
+        if (!cartSidebar || !cartOverlay) {
+            console.warn('Cart sidebar not initialized yet');
+            return;
+        }
+        cartSidebar.classList.remove('translate-x-full');
+        cartOverlay.classList.add('opacity-50');
+        cartOverlay.classList.remove('pointer-events-none');
+        loadCartSidebar();
+    };
+
+    function initCartSidebar() {
+        cartSidebar = document.getElementById('cart-sidebar');
+        cartOverlay = document.getElementById('cart-overlay');
+        closeBtn = document.getElementById('close-cart-sidebar');
+
+        if (!cartSidebar || !cartOverlay || !closeBtn) {
+            console.warn('Cart sidebar elements not found');
+            return;
+        }
+
+        // Close sidebar function
+        function closeCartSidebar() {
+            cartSidebar.classList.add('translate-x-full');
+            cartOverlay.classList.remove('opacity-50');
+            cartOverlay.classList.add('pointer-events-none');
+            setTimeout(() => {
+                cartOverlay.classList.remove('opacity-0');
+            }, 300);
+        }
+
+        // Close events
+        closeBtn.addEventListener('click', closeCartSidebar);
+        cartOverlay.addEventListener('click', closeCartSidebar);
+    }
+
+    // Sayfa yüklendiğinde çalıştır
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCartSidebar);
+    } else {
+        initCartSidebar();
+    }
+
+    // Turbo/Symfony sayfa geçişlerinde yeniden çalıştır
+    document.addEventListener('turbo:load', initCartSidebar);
+
+    // Load cart items for sidebar
+    function loadCartSidebar() {
+        const container = document.getElementById('cart-sidebar-items');
+        const totalEl = document.getElementById('cart-sidebar-total');
+
+        if (!container || !totalEl) {
+            console.warn('Cart sidebar content elements not found');
+            return;
+        }
+
+        // Loading state
+        container.innerHTML = '<div class="text-center py-4"><div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div></div>';
+
+        fetch('/cart/api/view', { credentials: 'same-origin' })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                renderCartSidebar(data);
+            })
+            .catch(error => {
+                console.error('Sepet sidebar yükleme hatası:', error);
+                container.innerHTML = '<div class="text-center py-4 text-red-500">Sepet yüklenirken hata oluştu</div>';
+            });
+    }
+
+    // Render cart sidebar
+    function renderCartSidebar(data) {
+        const container = document.getElementById('cart-sidebar-items');
+        const totalEl = document.getElementById('cart-sidebar-total');
+
+        if (!container || !totalEl) return;
+
+        if (!data.items || data.items.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-8">
+                    <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                    </svg>
+                    <p class="text-gray-500">Sepetiniz boş</p>
+                </div>
+            `;
+            totalEl.textContent = '0,00 ₺';
+            return;
+        }
+
+        container.innerHTML = '';
+        data.items.forEach(item => {
+            const itemHtml = `
+                <div class="flex items-center space-x-4 bg-gray-50 rounded-lg p-3">
+                    <img src="${item.product.image || ''}" alt="${item.product.name}" class="w-12 h-12 object-cover rounded-lg" onerror="this.style.display='none'">
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-medium text-gray-900 truncate">${item.product.name}</h4>
+                        <p class="text-sm text-gray-500">${item.quantity} adet × ${formatPrice(item.product.price)}</p>
+                    </div>
+                    <div class="text-sm font-semibold text-gray-900">${formatPrice(item.lineTotal)}</div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', itemHtml);
+        });
+
+        totalEl.textContent = formatPrice(data.cartTotal);
+    }
+
+    function formatPrice(price) {
+        return new Intl.NumberFormat('tr-TR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(price) + ' ₺';
+    }
+})();
+</script>
